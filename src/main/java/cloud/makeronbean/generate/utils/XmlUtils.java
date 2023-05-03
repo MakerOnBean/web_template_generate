@@ -1,17 +1,14 @@
 package cloud.makeronbean.generate.utils;
 
-import cloud.makeronbean.generate.constant.dependency.DependencyConst;
-import cloud.makeronbean.generate.entity.starter.BaseStarter;
-import cloud.makeronbean.generate.entity.starter.factory.StarterFactory;
-import cloud.makeronbean.generate.entity.starter.factory.StarterFactoryImpl;
-import lombok.SneakyThrows;
+import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import java.io.*;
-import java.util.List;
+import java.nio.file.Files;
 
 /**
  * @author makeronbean
@@ -20,24 +17,32 @@ import java.util.List;
  */
 
 public class XmlUtils {
-    private static Document document;
-    private static File pomFile;
-    
+    private static final Document DOCUMENT;
+    private static final File POM_FILE;
+    private static final InputStream IN;
     private static final String URL = "http://maven.apache.org/POM/4.0.0";
     
-    public static void init(File pomFile, InputStream in) throws DocumentException, FileNotFoundException {
-        XmlUtils.pomFile = pomFile;
-        document = new SAXReader().read(in);
+    
+    static {
+        String path = ProjectInfoUtils.pomFilePath();
+        POM_FILE = new File(path);
+        try {
+            IN = new FileInputStream(POM_FILE);
+            DOCUMENT = new SAXReader().read(IN);
+        } catch (DocumentException | FileNotFoundException e) {
+            throw new RuntimeException("pom文件操作失败", e);
+        }
     }
     
     
     /**
      * 获取单个节点
+     *
      * @param key 标签名称
      * @return 节点值
      */
     public static String getSingleValue(String key) {
-        Element element = document.getRootElement();
+        Element element = DOCUMENT.getRootElement();
         return element.element(key).getStringValue();
     }
     
@@ -45,33 +50,30 @@ public class XmlUtils {
     /**
      * 添加节点
      */
-    @SneakyThrows
-    public static void addNodes(List<BaseStarter.Dependency> dependencyList) {
-        for (BaseStarter.Dependency dependency : dependencyList) {
-            Element parentElement = null;
-            if (DependencyConst.PROJECT.getTabName().equals(dependency.getParentNodeName())) {
-                parentElement = (Element) document.selectSingleNode(dependency.getParentNodeName());
-            } else {
-                parentElement = document.getRootElement().element(dependency.getParentNodeName());
-            }
-    
-            Element parentTab = parentElement.addElement(dependency.getTabName(), URL);
-    
-            parentTab.addElement(DependencyConst.GROUPID.getTabName(), URL).addText(dependency.getGroupId());
-    
-            parentTab.addElement(DependencyConst.ARTIFACTID.getTabName(), URL).addText(dependency.getArtifactId());
-    
-            if (dependency.getVersion() != null) {
-                parentTab.addElement(DependencyConst.VERSION.getTabName(), URL).addText(dependency.getVersion());
-            }
-            
-            if (dependency.getOptional() != null) {
-                parentTab.addElement(DependencyConst.OPTIONAL.getTabName(), URL).addText(dependency.getOptional());
-            }
-    
-            if (dependency.getScope() != null) {
-                parentTab.addElement(DependencyConst.SCOPE.getTabName(), URL).addText(dependency.getScope());
-            }
+    public static void addNode(DependencyItem dependencyItem) {
+        Element parentElement;
+        if (DependencyConst.PROJECT.getTabName().equals(dependencyItem.getParentNodeName())) {
+            parentElement = (Element) DOCUMENT.selectSingleNode(dependencyItem.getParentNodeName());
+        } else {
+            parentElement = DOCUMENT.getRootElement().element(dependencyItem.getParentNodeName());
+        }
+        
+        Element parentTab = parentElement.addElement(dependencyItem.getTabName(), URL);
+        
+        parentTab.addElement(DependencyConst.GROUP_ID.getTabName(), URL).addText(dependencyItem.getGroupId());
+        
+        parentTab.addElement(DependencyConst.ARTIFACT_ID.getTabName(), URL).addText(dependencyItem.getArtifactId());
+        
+        if (dependencyItem.getVersion() != null) {
+            parentTab.addElement(DependencyConst.VERSION.getTabName(), URL).addText(dependencyItem.getVersion());
+        }
+        
+        if (dependencyItem.getOptional() != null) {
+            parentTab.addElement(DependencyConst.OPTIONAL.getTabName(), URL).addText(dependencyItem.getOptional());
+        }
+        
+        if (dependencyItem.getScope() != null) {
+            parentTab.addElement(DependencyConst.SCOPE.getTabName(), URL).addText(dependencyItem.getScope());
         }
     }
     
@@ -80,13 +82,21 @@ public class XmlUtils {
      * 刷新pom
      */
     public static void refreshPom() throws IOException {
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(pomFile),format);
-        xmlWriter.write(document);
+        OutputFormat format = new OutputFormat();
+        format.setEncoding("UTF-8");
+        format.setNewlines(true);
+        format.setIndent(true);
+        format.setIndentSize(4);
+        XMLWriter xmlWriter = new XMLWriter(Files.newOutputStream(POM_FILE.toPath()), format);
+        xmlWriter.write(DOCUMENT);
         xmlWriter.close();
     }
     
-    public static void main(String[] args) {
-        StarterFactory factory = new StarterFactoryImpl();
+    
+    /**
+     * 关闭流
+     */
+    public static void closeStream() throws IOException {
+        IN.close();
     }
 }

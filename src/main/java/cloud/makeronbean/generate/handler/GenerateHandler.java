@@ -1,0 +1,24 @@
+package cloud.makeronbean.generate.handler;
+
+import cloud.makeronbean.generate.starter.base.BaseStarter;
+
+/**
+ * @author makeronbean
+ * @createDate 2023-05-03  13:55
+ * @description 生成处理器接口
+ */
+public interface GenerateHandler {
+    
+    /**
+     * 代码生成处理方法
+     *
+     * @param starter starter项
+     */
+    void generateHandler(BaseStarter starter) throws Exception;
+    
+    
+    /**
+     * 生成完成之后执行
+     */
+    void afterGenerate() throws Exception;
+}
