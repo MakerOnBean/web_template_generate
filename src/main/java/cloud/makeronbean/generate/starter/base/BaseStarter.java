@@ -30,8 +30,6 @@ public abstract class BaseStarter {
         return this.getClass().equals(o.getClass());
     }
     
-    
-    
     public Integer getOrder() {
         return order;
     }

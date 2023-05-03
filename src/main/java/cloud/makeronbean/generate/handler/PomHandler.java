@@ -38,9 +38,16 @@ public class PomHandler extends GenerateHandlerAdapter {
         }
     }
     
+    
     @Override
     public void afterGenerate() throws IOException {
         refresh();
         XmlUtils.closeStream();
+    }
+    
+    
+    @Override
+    public void beforeGenerate() {
+        XmlUtils.initPom();
     }
 }

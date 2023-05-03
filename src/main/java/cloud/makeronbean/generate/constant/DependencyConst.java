@@ -25,6 +25,12 @@ public enum DependencyConst {
     
     OPTIONAL("optional"),
     
+    BUILD("build"),
+    
+    PLUGINS("plugins"),
+    
+    PLUGIN("plugin"),
+    
     ;
     
     private final String tabName;

@@ -3,6 +3,7 @@ package cloud.makeronbean.generate.handler;
 import cloud.makeronbean.generate.starter.base.BaseStarter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
+import cloud.makeronbean.generate.utils.FileUtils;
 import cloud.makeronbean.generate.utils.ProjectInfoUtils;
 import cloud.makeronbean.generate.utils.StringUtils;
 
@@ -55,5 +56,10 @@ public class FileHandler extends GenerateHandlerAdapter {
                 write(codeItem);
             }
         }
+    }
+    
+    @Override
+    public void beforeGenerate() throws Exception {
+        FileUtils.initProject();
     }
 }

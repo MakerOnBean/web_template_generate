@@ -10,6 +10,11 @@ import cloud.makeronbean.generate.starter.base.BaseStarter;
 public interface GenerateHandler {
     
     /**
+     * 生成完成之前执行
+     */
+    void beforeGenerate() throws Exception;
+    
+    /**
      * 代码生成处理方法
      *
      * @param starter starter项

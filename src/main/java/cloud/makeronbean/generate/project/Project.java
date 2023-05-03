@@ -143,9 +143,6 @@ public class Project {
         List<BaseStarter> executeStarterList = null;
         List<GenerateHandler> executeHandlerList = null;
         try {
-            // 创建项目基本文件
-            FileUtils.initProject();
-            
             // 排序 去重
             executeStarterList = starterList
                     .stream()
@@ -164,6 +161,11 @@ public class Project {
                     .stream()
                     .distinct()
                     .collect(Collectors.toList());
+    
+            // 前置工作
+            for (GenerateHandler handler : executeHandlerList) {
+                handler.beforeGenerate();
+            }
             
             // 生成
             for (BaseStarter starter : executeStarterList) {

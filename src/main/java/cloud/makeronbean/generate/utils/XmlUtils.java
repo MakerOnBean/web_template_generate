@@ -6,9 +6,12 @@ import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.dom4j.xpath.DefaultXPath;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author makeronbean
@@ -21,9 +24,13 @@ public class XmlUtils {
     private static final File POM_FILE;
     private static final InputStream IN;
     private static final String URL = "http://maven.apache.org/POM/4.0.0";
+    private static final Map<String, String> namespaceURIs;
     
     
     static {
+        namespaceURIs = new HashMap<>();
+        namespaceURIs.put("a", "http://maven.apache.org/POM/4.0.0");
+        namespaceURIs.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
         String path = ProjectInfoUtils.pomFilePath();
         POM_FILE = new File(path);
         try {
@@ -31,6 +38,27 @@ public class XmlUtils {
             DOCUMENT = new SAXReader().read(IN);
         } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException("pom文件操作失败", e);
+        }
+    }
+    
+    
+    /**
+     * 创建基本的pom标签
+     */
+    public static void initPom() {
+        Element project = (Element) DOCUMENT.selectSingleNode(DependencyConst.PROJECT.getTabName());
+        // 创建 dependencies
+        Element dependencies = DOCUMENT.getRootElement().element(DependencyConst.DEPENDENCIES.getTabName());
+        if (dependencies == null) {
+            project.addElement(DependencyConst.DEPENDENCIES.getTabName(), URL);
+        }
+        
+        // 创建build
+        Element build = DOCUMENT.getRootElement().element(DependencyConst.BUILD.getTabName());
+        if (build == null) {
+            build = project.addElement(DependencyConst.BUILD.getTabName(), URL);
+            // 创建plugins
+            build.addElement(DependencyConst.PLUGINS.getTabName(), URL);
         }
     }
     
@@ -51,12 +79,9 @@ public class XmlUtils {
      * 添加节点
      */
     public static void addNode(DependencyItem dependencyItem) {
-        Element parentElement;
-        if (DependencyConst.PROJECT.getTabName().equals(dependencyItem.getParentNodeName())) {
-            parentElement = (Element) DOCUMENT.selectSingleNode(dependencyItem.getParentNodeName());
-        } else {
-            parentElement = DOCUMENT.getRootElement().element(dependencyItem.getParentNodeName());
-        }
+        XPath xpath = new DefaultXPath("//a:"+dependencyItem.getParentNodeName());
+        xpath.setNamespaceURIs(namespaceURIs);
+        Element parentElement = (Element)xpath.selectSingleNode(DOCUMENT);
         
         Element parentTab = parentElement.addElement(dependencyItem.getTabName(), URL);
         

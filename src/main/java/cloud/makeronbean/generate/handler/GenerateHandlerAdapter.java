@@ -8,6 +8,11 @@ import cloud.makeronbean.generate.starter.base.BaseStarter;
  * @description
  */
 public abstract class GenerateHandlerAdapter implements GenerateHandler {
+    
+    @Override
+    public void beforeGenerate() throws Exception {
+    }
+    
     @Override
     public void afterGenerate() throws Exception {
     }

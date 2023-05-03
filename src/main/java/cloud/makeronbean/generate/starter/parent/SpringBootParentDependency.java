@@ -20,6 +20,14 @@ public class SpringBootParentDependency extends BaseDependency {
         parent.setVersion("2.3.6.RELEASE");
         parent.setParentNodeName(DependencyConst.PROJECT.getTabName());
         this.addDependencyItem(parent);
+    
+        DependencyItem plugin = new DependencyItem();
+        plugin.setTabName(DependencyConst.PLUGIN.getTabName());
+        plugin.setGroupId("org.springframework.boot");
+        plugin.setArtifactId("spring-boot-maven-plugin");
+        plugin.setVersion("2.3.6.RELEASE");
+        plugin.setParentNodeName(DependencyConst.PLUGINS.getTabName());
+        this.addDependencyItem(plugin);
         
         // devtools
         if (SpringBootParentStarter.config.isDevtools()) {
