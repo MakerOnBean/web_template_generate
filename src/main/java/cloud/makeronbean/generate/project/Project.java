@@ -1,15 +1,14 @@
 package cloud.makeronbean.generate.project;
 
 import cloud.makeronbean.generate.handler.GenerateHandler;
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.handler.FileHandler;
 import cloud.makeronbean.generate.handler.PomHandler;
 import cloud.makeronbean.generate.handler.YamlHandler;
-import cloud.makeronbean.generate.utils.FileUtils;
+import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapter;
+import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapterImpl;
 import cloud.makeronbean.generate.utils.ProjectInfoUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,12 +24,14 @@ public class Project {
     /**
      * starter项列表
      */
-    private final List<BaseStarter> starterList;
+    private final List<AbstractStarter> starterList;
     
     /**
      * 处理器列表
      */
     private final List<GenerateHandler> generateHandlerList;
+    
+    private final StarterBridgeAdapter starterBridgeAdapter = new StarterBridgeAdapterImpl();
     
     Project() {
         generateHandlerList = getHandlerList();
@@ -59,8 +60,8 @@ public class Project {
      * @param starter starter项
      * @return this
      */
-    public Project addStarter(BaseStarter starter) {
-        Class<? extends BaseStarter> clazz = starter.getClass();
+    public Project addStarter(AbstractStarter starter) {
+        Class<? extends AbstractStarter> clazz = starter.getClass();
         if (starterList.stream().anyMatch(item -> item.getClass().equals(clazz))) {
             throw new RuntimeException(String.format("%s 已存在，添加失败\n", clazz.getSimpleName()));
         }
@@ -77,7 +78,7 @@ public class Project {
      * @return 类型对应的starter对象，如果不存在返回null
      */
     public <T> T getStarterByType(Class<T> clazz) {
-        for (BaseStarter starter : starterList) {
+        for (AbstractStarter starter : starterList) {
             if (starter.getClass().equals(clazz)) {
                 return (T) starter;
             }
@@ -140,7 +141,7 @@ public class Project {
     
     
     public void generate() {
-        List<BaseStarter> executeStarterList = null;
+        List<AbstractStarter> executeStarterList = null;
         List<GenerateHandler> executeHandlerList = null;
         try {
             // 排序 去重
@@ -168,8 +169,8 @@ public class Project {
             }
             
             // 生成
-            for (BaseStarter starter : executeStarterList) {
-                starter.load();
+            for (AbstractStarter starter : executeStarterList) {
+                starterBridgeAdapter.loadStarter(starter);
                 for (GenerateHandler handler : executeHandlerList) {
                     handler.generateHandler(starter);
                 }

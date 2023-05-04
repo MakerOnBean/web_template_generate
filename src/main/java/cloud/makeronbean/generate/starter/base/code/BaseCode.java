@@ -9,11 +9,7 @@ import java.util.List;
  * @description
  */
 
-public abstract class BaseCode {
-    
-    public BaseCode() {
-        getDefault();
-    }
+public class BaseCode {
     
     private final List<CodeItem> codeItemList = new LinkedList<>();
     
@@ -30,14 +26,8 @@ public abstract class BaseCode {
      * 添加代码片段
      * @param item 代码片段
      */
-    protected void addCodeItem(CodeItem item) {
+    public void addCodeItem(CodeItem item) {
         codeItemList.add(item);
     }
-    
-    
-    /**
-     * 填充 codeItemList
-     */
-    protected abstract void getDefault();
     
 }

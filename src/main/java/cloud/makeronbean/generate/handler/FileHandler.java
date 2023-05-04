@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.handler;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.utils.FileUtils;
@@ -49,7 +49,7 @@ public class FileHandler extends GenerateHandlerAdapter {
     }
     
     @Override
-    public void generateHandler(BaseStarter starter) throws Exception {
+    public void generateHandler(AbstractStarter starter) throws Exception {
         BaseCode code = starter.getCode();
         if (code != null) {
             for (CodeItem codeItem : code.getCodeItemList()) {

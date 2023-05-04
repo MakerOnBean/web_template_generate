@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.handler;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.utils.XmlUtils;
@@ -29,7 +29,7 @@ public class PomHandler extends GenerateHandlerAdapter {
      * 处理方法
      */
     @Override
-    public void generateHandler(BaseStarter starter) {
+    public void generateHandler(AbstractStarter starter) {
         BaseDependency dependency = starter.getDependency();
         if (dependency != null) {
             for (DependencyItem dependencyItem : dependency.getDependencyItemList()) {

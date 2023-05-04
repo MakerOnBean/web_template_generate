@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.handler;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 
 /**
  * @author makeronbean
@@ -19,7 +19,7 @@ public interface GenerateHandler {
      *
      * @param starter starter项
      */
-    void generateHandler(BaseStarter starter) throws Exception;
+    void generateHandler(AbstractStarter starter) throws Exception;
     
     
     /**

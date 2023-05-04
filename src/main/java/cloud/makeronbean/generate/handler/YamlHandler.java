@@ -1,9 +1,8 @@
 package cloud.makeronbean.generate.handler;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
 import cloud.makeronbean.generate.utils.ProjectInfoUtils;
-import cloud.makeronbean.generate.utils.SystemUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -94,7 +93,7 @@ public class YamlHandler extends GenerateHandlerAdapter{
     }
     
     @Override
-    public void generateHandler(BaseStarter starter) throws IOException {
+    public void generateHandler(AbstractStarter starter) throws IOException {
         BaseYaml baseYaml = starter.getYaml();
         if (baseYaml != null) {
             Map<String, Object> configMap = baseYaml.getConfigMap();

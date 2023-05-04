@@ -10,33 +10,39 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  * @description
  */
 
-public class SpringBootWebCode extends BaseCode {
+public class SpringBootWebCode {
     
+    private final BaseCode code;
+    private final SpringBootWebConfig config;
     
-    @Override
-    protected void getDefault() {
+    SpringBootWebCode(SpringBootWebConfig config, BaseCode code) {
+        this.code = code;
+        this.config = config;
+    }
+    
+    public void fillData() {
         // 统一返回结果
         addCommonResult();
         
         // 跨域
-        if (SpringBootWebStarter.config.isCors()) {
+        if (config.isCors()) {
             addCors();
         }
         
         // 断言
-        if (SpringBootWebStarter.config.isAssert()) {
+        if (config.isAssert()) {
             addAssert();
         }
-    
+        
         // 全局异常处理
-        addGlobalExceptionHandler();
+        addGlobalExceptionHandler(config);
     }
     
     
     /**
      * 全局异常处理
      */
-    private void addGlobalExceptionHandler() {
+    private void addGlobalExceptionHandler(SpringBootWebConfig config) {
         CodeItem globalHandler = new CodeItem();
         globalHandler.setPath("common/exception");
         globalHandler.setFileName("GlobalExceptionHandler.java");
@@ -48,14 +54,14 @@ public class SpringBootWebCode extends BaseCode {
                         "import org.springframework.web.bind.annotation.ResponseBody;\n" +
                         "import org.springframework.web.bind.annotation.ControllerAdvice;\n" +
                         "import org.springframework.web.bind.annotation.ExceptionHandler;\n" +
-                        (SpringBootWebStarter.config.isValid() ?
-                        "import org.springframework.validation.BindException;\n" +
-                        "import org.springframework.validation.ObjectError;\n" +
-                        "import org.springframework.web.bind.MethodArgumentNotValidException;\n" +
-                        "import org.springframework.web.bind.MissingServletRequestParameterException;\n" +
-                        "\n" +
-                        "import javax.validation.ConstraintViolation;\n" +
-                        "import javax.validation.ConstraintViolationException;\n" : "") +
+                        (config.isValid() ?
+                                "import org.springframework.validation.BindException;\n" +
+                                        "import org.springframework.validation.ObjectError;\n" +
+                                        "import org.springframework.web.bind.MethodArgumentNotValidException;\n" +
+                                        "import org.springframework.web.bind.MissingServletRequestParameterException;\n" +
+                                        "\n" +
+                                        "import javax.validation.ConstraintViolation;\n" +
+                                        "import javax.validation.ConstraintViolationException;\n" : "") +
                         "import javax.servlet.http.HttpServletRequest;\n" +
                         "\n" +
                         "@ControllerAdvice\n" +
@@ -63,86 +69,86 @@ public class SpringBootWebCode extends BaseCode {
                         "    \n" +
                         "    private final Logger logger = LoggerFactory.getLogger(getClass());\n" +
                         
-                        (SpringBootWebStarter.config.isValid() ?
-                        "    \n" +
-                        "    /**\n" +
-                        "     * 处理 MissingServletRequestParameterException 异常\n" +
-                        "     * <p>\n" +
-                        "     * SpringMVC 参数不正确\n" +
-                        "     * 没有携带需要的参数\n" +
-                        "     */\n" +
-                        "    @ResponseBody\n" +
-                        "    @ExceptionHandler(value = MissingServletRequestParameterException.class)\n" +
-                        "    public R missingServletRequestParameterExceptionHandler(HttpServletRequest req, MissingServletRequestParameterException ex) {\n" +
-                        "        logger.error(\"[missingServletRequestParameterExceptionHandler]\", ex);\n" +
-                        "        // 包装 R 结果\n" +
-                        "        return R.error(ResultCode.MISSING_REQUEST_PARAM_ERROR);\n" +
-                        "    }\n" +
-                        "    \n" +
-                        "    \n" +
-                        "    /**\n" +
-                        "     * get 携带query参数与路径参数\n" +
-                        "     */\n" +
-                        "    @ResponseBody\n" +
-                        "    @ExceptionHandler(value = ConstraintViolationException.class)\n" +
-                        "    public R constraintViolationExceptionHandler(HttpServletRequest req, ConstraintViolationException ex) {\n" +
-                        "        logger.error(\"[constraintViolationExceptionHandler]\", ex);\n" +
-                        "        // 拼接错误\n" +
-                        "        StringBuilder detailMessage = new StringBuilder();\n" +
-                        "        for (ConstraintViolation<?> constraintViolation : ex.getConstraintViolations()) {\n" +
-                        "            // 使用 ; 分隔多个错误\n" +
-                        "            if (detailMessage.length() > 0) {\n" +
-                        "                detailMessage.append(\";\");\n" +
-                        "            }\n" +
-                        "            // 拼接内容到其中\n" +
-                        "            detailMessage.append(constraintViolation.getMessage());\n" +
-                        "        }\n" +
-                        "        // 包装 R 结果\n" +
-                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
-                        "    }\n" +
-                        "    \n" +
-                        "    \n" +
-                        "    @ResponseBody\n" +
-                        "    @ExceptionHandler(value = BindException.class)\n" +
-                        "    public R bindExceptionHandler(HttpServletRequest req, BindException ex) {\n" +
-                        "        logger.error(\"[bindExceptionHandler]\", ex);\n" +
-                        "        // 拼接错误\n" +
-                        "        StringBuilder detailMessage = new StringBuilder();\n" +
-                        "        for (ObjectError objectError : ex.getAllErrors()) {\n" +
-                        "            // 使用 ; 分隔多个错误\n" +
-                        "            if (detailMessage.length() > 0) {\n" +
-                        "                detailMessage.append(\";\");\n" +
-                        "            }\n" +
-                        "            // 拼接内容到其中\n" +
-                        "            detailMessage.append(objectError.getDefaultMessage());\n" +
-                        "        }\n" +
-                        "        // 包装 R 结果\n" +
-                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
-                        "    }\n" +
-                        "    \n" +
-                        "    \n" +
-                        "    /**\n" +
-                        "     * post请求，json参数\n" +
-                        "     */\n" +
-                        "    @ResponseBody\n" +
-                        "    @ExceptionHandler(value = MethodArgumentNotValidException.class)\n" +
-                        "    public R methodArgumentNotValidExceptionHandler(HttpServletRequest req, MethodArgumentNotValidException ex) {\n" +
-                        "        logger.error(\"[MethodArgumentNotValidException]\", ex);\n" +
-                        "        // 拼接错误\n" +
-                        "        StringBuilder detailMessage = new StringBuilder();\n" +
-                        "        for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {\n" +
-                        "            // 使用 ; 分隔多个错误\n" +
-                        "            if (detailMessage.length() > 0) {\n" +
-                        "                detailMessage.append(\";\");\n" +
-                        "            }\n" +
-                        "            // 拼接内容到其中\n" +
-                        "            detailMessage.append(objectError.getDefaultMessage());\n" +
-                        "        }\n" +
-                        "        // 包装 R 结果\n" +
-                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
-                        "    }\n" : "")  +
-                
-                        (SpringBootWebStarter.config.isAssert() ?
+                        (config.isValid() ?
+                                "    \n" +
+                                        "    /**\n" +
+                                        "     * 处理 MissingServletRequestParameterException 异常\n" +
+                                        "     * <p>\n" +
+                                        "     * SpringMVC 参数不正确\n" +
+                                        "     * 没有携带需要的参数\n" +
+                                        "     */\n" +
+                                        "    @ResponseBody\n" +
+                                        "    @ExceptionHandler(value = MissingServletRequestParameterException.class)\n" +
+                                        "    public R missingServletRequestParameterExceptionHandler(HttpServletRequest req, MissingServletRequestParameterException ex) {\n" +
+                                        "        logger.error(\"[missingServletRequestParameterExceptionHandler]\", ex);\n" +
+                                        "        // 包装 R 结果\n" +
+                                        "        return R.error(ResultCode.MISSING_REQUEST_PARAM_ERROR);\n" +
+                                        "    }\n" +
+                                        "    \n" +
+                                        "    \n" +
+                                        "    /**\n" +
+                                        "     * get 携带query参数与路径参数\n" +
+                                        "     */\n" +
+                                        "    @ResponseBody\n" +
+                                        "    @ExceptionHandler(value = ConstraintViolationException.class)\n" +
+                                        "    public R constraintViolationExceptionHandler(HttpServletRequest req, ConstraintViolationException ex) {\n" +
+                                        "        logger.error(\"[constraintViolationExceptionHandler]\", ex);\n" +
+                                        "        // 拼接错误\n" +
+                                        "        StringBuilder detailMessage = new StringBuilder();\n" +
+                                        "        for (ConstraintViolation<?> constraintViolation : ex.getConstraintViolations()) {\n" +
+                                        "            // 使用 ; 分隔多个错误\n" +
+                                        "            if (detailMessage.length() > 0) {\n" +
+                                        "                detailMessage.append(\";\");\n" +
+                                        "            }\n" +
+                                        "            // 拼接内容到其中\n" +
+                                        "            detailMessage.append(constraintViolation.getMessage());\n" +
+                                        "        }\n" +
+                                        "        // 包装 R 结果\n" +
+                                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
+                                        "    }\n" +
+                                        "    \n" +
+                                        "    \n" +
+                                        "    @ResponseBody\n" +
+                                        "    @ExceptionHandler(value = BindException.class)\n" +
+                                        "    public R bindExceptionHandler(HttpServletRequest req, BindException ex) {\n" +
+                                        "        logger.error(\"[bindExceptionHandler]\", ex);\n" +
+                                        "        // 拼接错误\n" +
+                                        "        StringBuilder detailMessage = new StringBuilder();\n" +
+                                        "        for (ObjectError objectError : ex.getAllErrors()) {\n" +
+                                        "            // 使用 ; 分隔多个错误\n" +
+                                        "            if (detailMessage.length() > 0) {\n" +
+                                        "                detailMessage.append(\";\");\n" +
+                                        "            }\n" +
+                                        "            // 拼接内容到其中\n" +
+                                        "            detailMessage.append(objectError.getDefaultMessage());\n" +
+                                        "        }\n" +
+                                        "        // 包装 R 结果\n" +
+                                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
+                                        "    }\n" +
+                                        "    \n" +
+                                        "    \n" +
+                                        "    /**\n" +
+                                        "     * post请求，json参数\n" +
+                                        "     */\n" +
+                                        "    @ResponseBody\n" +
+                                        "    @ExceptionHandler(value = MethodArgumentNotValidException.class)\n" +
+                                        "    public R methodArgumentNotValidExceptionHandler(HttpServletRequest req, MethodArgumentNotValidException ex) {\n" +
+                                        "        logger.error(\"[MethodArgumentNotValidException]\", ex);\n" +
+                                        "        // 拼接错误\n" +
+                                        "        StringBuilder detailMessage = new StringBuilder();\n" +
+                                        "        for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {\n" +
+                                        "            // 使用 ; 分隔多个错误\n" +
+                                        "            if (detailMessage.length() > 0) {\n" +
+                                        "                detailMessage.append(\";\");\n" +
+                                        "            }\n" +
+                                        "            // 拼接内容到其中\n" +
+                                        "            detailMessage.append(objectError.getDefaultMessage());\n" +
+                                        "        }\n" +
+                                        "        // 包装 R 结果\n" +
+                                        "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
+                                        "    }\n" : "") +
+                        
+                        (config.isAssert() ?
                                 "    \n" +
                                         "    \n" +
                                         "    /**\n" +
@@ -152,8 +158,8 @@ public class SpringBootWebCode extends BaseCode {
                                         "    @ExceptionHandler(AssertException.class)\n" +
                                         "    public R assertExceptionHandler(AssertException ex) {\n" +
                                         "        return R.error(ex.getCode());\n" +
-                                        "    }\n" : "" ) +
-                
+                                        "    }\n" : "") +
+                        
                         "    \n" +
                         "    \n" +
                         "    /**\n" +
@@ -167,9 +173,9 @@ public class SpringBootWebCode extends BaseCode {
                         "        // 返回 ERROR R\n" +
                         "        return R.error(ResultCode.SYS_ERROR);\n" +
                         "    }\n" +
-                        "}",ProjectInfoUtils.basePackage,ProjectInfoUtils.basePackage
+                        "}", ProjectInfoUtils.basePackage, ProjectInfoUtils.basePackage
         ));
-        this.addCodeItem(globalHandler);
+        code.addCodeItem(globalHandler);
     }
     
     
@@ -232,7 +238,7 @@ public class SpringBootWebCode extends BaseCode {
                         "    }\n" +
                         "}", ProjectInfoUtils.basePackage, ProjectInfoUtils.basePackage
         ));
-        this.addCodeItem(assertUtils);
+        code.addCodeItem(assertUtils);
         
         CodeItem assertException = new CodeItem();
         assertException.setPath("common/exception");
@@ -251,7 +257,7 @@ public class SpringBootWebCode extends BaseCode {
                         "    }\n" +
                         "}", ProjectInfoUtils.basePackage
         ));
-        this.addCodeItem(assertException);
+        code.addCodeItem(assertException);
     }
     
     
@@ -363,7 +369,7 @@ public class SpringBootWebCode extends BaseCode {
                         "    }" +
                         "}"
         );
-        this.addCodeItem(r);
+        code.addCodeItem(r);
         
         CodeItem resultCode = new CodeItem();
         resultCode.setPath("common/result");
@@ -416,7 +422,7 @@ public class SpringBootWebCode extends BaseCode {
                         "    }" +
                         "}"
         );
-        this.addCodeItem(resultCode);
+        code.addCodeItem(resultCode);
     }
     
     
@@ -452,6 +458,6 @@ public class SpringBootWebCode extends BaseCode {
                         "    }\n" +
                         "}"
         );
-        this.addCodeItem(cors);
+        code.addCodeItem(cors);
     }
 }

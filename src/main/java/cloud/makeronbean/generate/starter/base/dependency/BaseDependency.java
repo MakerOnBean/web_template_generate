@@ -9,11 +9,7 @@ import java.util.List;
  * @description
  */
 
-public abstract class BaseDependency {
-    
-    public BaseDependency() {
-        getDefault();
-    }
+public class BaseDependency {
     
     private final List<DependencyItem> dependencyItemList = new LinkedList<>();
     
@@ -29,13 +25,7 @@ public abstract class BaseDependency {
      * 添加依赖项
      * @param item 依赖项
      */
-    protected void addDependencyItem(DependencyItem item) {
+    public void addDependencyItem(DependencyItem item) {
         dependencyItemList.add(item);
     }
-    
-    
-    /**
-     * 填充 dependencyItemList
-     */
-    protected abstract void getDefault();
 }

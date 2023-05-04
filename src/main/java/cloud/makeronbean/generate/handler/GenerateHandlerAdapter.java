@@ -1,7 +1,5 @@
 package cloud.makeronbean.generate.handler;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
-
 /**
  * @author makeronbean
  * @createDate 2023-05-03  14:14

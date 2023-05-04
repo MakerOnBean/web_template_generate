@@ -1,32 +1,33 @@
 package cloud.makeronbean.generate.starter.lombok;
 
-import cloud.makeronbean.generate.starter.base.BaseStarter;
+import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
+import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 
 /**
  * @author makeronbean
  * @createDate 2023-05-03  13:31
  * @description
  */
-public class LombokStarter extends BaseStarter {
+public class LombokStarter extends StarterAdapter {
     
-    static Config config = new Config();
-    
-    @Override
-    public void load() {
-        this.dependency = new LombokDependency();
-        this.order = 3;
-    }
+    LombokConfig config = new LombokConfig();
     
     public LombokStarter version(String version) {
-        config.version = version;
+        config.setVersion(version);
         return this;
     }
     
-    static class Config {
-        private String version = "1.18.26";
-    
-        public String getVersion() {
-            return version;
-        }
+    @Override
+    protected void addDependency(BaseDependency dependency) {
+        DependencyItem lombok = new DependencyItem();
+        lombok.setGroupId("org.projectlombok");
+        lombok.setTabName(DependencyConst.DEPENDENCY.getTabName());
+        lombok.setArtifactId("lombok");
+        lombok.setScope("provided");
+        lombok.setVersion(config.getVersion());
+        lombok.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
+        dependency.addDependencyItem(lombok);
     }
 }

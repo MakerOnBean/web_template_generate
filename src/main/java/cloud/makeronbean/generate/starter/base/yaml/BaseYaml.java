@@ -9,11 +9,8 @@ import java.util.Map;
  * @description
  */
 
-public abstract class BaseYaml {
+public class BaseYaml {
     
-    public BaseYaml() {
-        getDefault();
-    }
     
     private final Map<String, Object> configMap = new HashMap<>();
     
@@ -21,7 +18,7 @@ public abstract class BaseYaml {
     /**
      * 填充配置map
      */
-    protected void addConfig(String key, Object value) {
+    public void addYamlConfig(String key, Object value) {
         configMap.put(key, value);
     }
     
@@ -32,10 +29,4 @@ public abstract class BaseYaml {
     public Map<String, Object> getConfigMap() {
         return this.configMap;
     }
-    
-    /**
-     * 填充map
-     */
-    protected abstract void getDefault();
-    
 }

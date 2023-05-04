@@ -1,7 +1,7 @@
 package cloud.makeronbean.generate.project;
 
 import cloud.makeronbean.generate.starter.base.factory.StarterFactory;
-import cloud.makeronbean.generate.starter.base.factory.StarterFactoryImpl;
+import cloud.makeronbean.generate.starter.base.factory.StarterFactorySingleImpl;
 import cloud.makeronbean.generate.starter.knife4j.Knife4jStarter;
 import cloud.makeronbean.generate.starter.lombok.LombokStarter;
 import cloud.makeronbean.generate.starter.mybatisplus.MyBatisPlusStarter;
@@ -16,11 +16,11 @@ import cloud.makeronbean.generate.starter.web.SpringBootWebStarter;
  */
 public class Projects {
     private static Project PROJECT;
-    private static final StarterFactory FACTORY = new StarterFactoryImpl();
+    private static final StarterFactory FACTORY = new StarterFactorySingleImpl();
     
     
     /**
-     * 火力全开
+     * 全部装配
      *
      * @param dbName     数据库名称
      * @param dbPassword 数据库密码
