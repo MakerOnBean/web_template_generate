@@ -23,4 +23,27 @@ public class StringUtils {
     public static boolean isEmpty(String str) {
         return str == null || "".equals(str);
     }
+
+    public static String bootNameFormat(String name) {
+        StringBuilder stringBuilder = new StringBuilder();
+        char[] charArray = name.toCharArray();
+        boolean flag = true;
+        for (char c : charArray) {
+            if (flag) {
+                if (c >= 97 && c <= 122) {
+                    stringBuilder.append((char) (c - 32));
+                } else {
+                    stringBuilder.append(c);
+                }
+                flag = false;
+            } else if (c == '_' || c == '-') {
+                flag = true;
+            } else {
+                stringBuilder.append(c);
+            }
+        }
+        stringBuilder.append("Application");
+        return stringBuilder.toString();
+    }
+
 }

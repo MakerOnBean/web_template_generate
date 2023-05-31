@@ -51,7 +51,7 @@ public class Knife4jStarter extends StarterAdapter {
     @Override
     protected void addCode(BaseCode code) {
         CodeItem knifeConfig = new CodeItem();
-        knifeConfig.setPath("knifeConfig/knife4j");
+        knifeConfig.setPath("config/knife4j");
         knifeConfig.setFileName("Knife4jConfiguration.java");
         knifeConfig.setCodeTemplate(String.format(
                 "import org.springframework.context.annotation.Bean;\n" +
