@@ -15,42 +15,42 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  * @description
  */
 public class MyBatisPlusStarter extends StarterAdapter {
-    
+
     MyBaitsPlusConfig config = new MyBaitsPlusConfig();
-    
-    
+
+
     public MyBatisPlusStarter mysqlVersion(String version) {
         config.setMysqlVersion(version);
         return this;
     }
-    
+
     public MyBatisPlusStarter username(String username) {
         config.setUsername(username);
         return this;
     }
-    
-    
+
+
     public MyBatisPlusStarter password(String password) {
         config.setPassword(password);
         return this;
     }
-    
+
     public MyBatisPlusStarter dbName(String dbName) {
         config.setDbName(dbName);
         return this;
     }
-    
+
     public MyBatisPlusStarter port(Integer port) {
         config.setPort(port);
         return this;
     }
-    
+
     public MyBatisPlusStarter logicDelete(boolean open) {
         config.setLogicDelete(open);
         return this;
     }
-    
-    
+
+
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem mybatisPlus = new DependencyItem();
@@ -60,7 +60,7 @@ public class MyBatisPlusStarter extends StarterAdapter {
         mybatisPlus.setVersion("3.4.1");
         mybatisPlus.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
         dependency.addDependencyItem(mybatisPlus);
-    
+
         DependencyItem mysql = new DependencyItem();
         mysql.setTabName(DependencyConst.DEPENDENCY.getTabName());
         mysql.setGroupId("mysql");
@@ -69,7 +69,7 @@ public class MyBatisPlusStarter extends StarterAdapter {
         mysql.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
         dependency.addDependencyItem(mysql);
     }
-    
+
     @Override
     protected void addYaml(BaseYaml yaml) {
         yaml.addYamlConfig("spring.datasource.username", config.getUsername());
@@ -86,45 +86,48 @@ public class MyBatisPlusStarter extends StarterAdapter {
             yaml.addYamlConfig("mybatis-plus.global-config.db-config.logic-not-delete-value", 0);
         }
     }
-    
+
     @Override
     protected void addCode(BaseCode code) {
         CodeItem meta = new CodeItem();
         meta.setPath("config/mybatis");
         meta.setFileName("CommonMetaObjectHandler.java");
         meta.setCodeTemplate(
-                "import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;\n" +
-                        "import org.apache.ibatis.reflection.MetaObject;\n" +
-                        "import org.springframework.stereotype.Component;\n" +
-                        "\n" +
-                        "import java.util.Date;\n" +
-                        "\n" +
-                        "@Component\n" +
-                        "public class CommonMetaObjectHandler implements MetaObjectHandler {\n" +
-                        "    /**\n" +
-                        "     * 新增时自动填充\n" +
-                        "     */\n" +
-                        "    @Override\n" +
-                        "    public void insertFill(MetaObject metaObject) {\n" +
-                        "        //参数1:元数据对象\n" +
-                        "        //参数2:类属性名称\n" +
-                        "        //参数3:类对象\n" +
-                        "        //参数4:当前系统时间\n" +
-                        "        this.strictInsertFill(metaObject, \"createTime\", Date.class, new Date());\n" +
-                        "        this.strictUpdateFill(metaObject, \"updateTime\", Date.class, new Date());\n" +
-                        "    }\n" +
-                        "    \n" +
-                        "    /**\n" +
-                        "     * 修改时自动填充\n" +
-                        "     */\n" +
-                        "    @Override\n" +
-                        "    public void updateFill(MetaObject metaObject) {\n" +
-                        "        this.strictUpdateFill(metaObject, \"updateTime\", Date.class, new Date());\n" +
-                        "    }\n" +
-                        "}"
+                String.format("import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;\n" +
+                                "import org.apache.ibatis.reflection.MetaObject;\n" +
+                                "import org.mybatis.spring.annotation.MapperScan;\n" +
+                                "import org.springframework.stereotype.Component;\n" +
+                                "\n" +
+                                "import java.util.Date;\n" +
+                                "\n" +
+                                "@Component\n" +
+                                "@MapperScan(\"%s.mapper\")\n" +
+                                "public class CommonMetaObjectHandler implements MetaObjectHandler {\n" +
+                                "    /**\n" +
+                                "     * 新增时自动填充\n" +
+                                "     */\n" +
+                                "    @Override\n" +
+                                "    public void insertFill(MetaObject metaObject) {\n" +
+                                "        //参数1:元数据对象\n" +
+                                "        //参数2:类属性名称\n" +
+                                "        //参数3:类对象\n" +
+                                "        //参数4:当前系统时间\n" +
+                                "        this.strictInsertFill(metaObject, \"createTime\", Date.class, new Date());\n" +
+                                "        this.strictUpdateFill(metaObject, \"updateTime\", Date.class, new Date());\n" +
+                                "    }\n" +
+                                "    \n" +
+                                "    /**\n" +
+                                "     * 修改时自动填充\n" +
+                                "     */\n" +
+                                "    @Override\n" +
+                                "    public void updateFill(MetaObject metaObject) {\n" +
+                                "        this.strictUpdateFill(metaObject, \"updateTime\", Date.class, new Date());\n" +
+                                "    }\n" +
+                                "}",ProjectInfoUtils.basePackage
+                        )
         );
         code.addCodeItem(meta);
     }
-    
+
 
 }

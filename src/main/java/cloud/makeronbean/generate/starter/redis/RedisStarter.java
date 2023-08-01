@@ -62,8 +62,8 @@ public class RedisStarter  extends StarterAdapter {
     @Override
     protected void addCode(BaseCode code) {
         CodeItem config = new CodeItem();
-        config.setPath("config.redis");
-        config.setFileName("RedisTemplate.java");
+        config.setPath("config/redis");
+        config.setFileName("RedisConfig.java");
         config.setCodeTemplate("import org.springframework.context.annotation.Bean;\n" +
                 "import org.springframework.data.redis.connection.RedisConnectionFactory;\n" +
                 "import org.springframework.data.redis.core.RedisTemplate;\n" +
