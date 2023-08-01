@@ -10,7 +10,9 @@ import org.dom4j.xpath.DefaultXPath;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -107,7 +109,9 @@ public class XmlUtils {
      * 刷新pom
      */
     public static void refreshPom() throws IOException {
-        OutputFormat format = new OutputFormat();
+        removeEmptyTextNodes(DOCUMENT.getRootElement());
+
+        OutputFormat format = OutputFormat.createPrettyPrint();
         format.setEncoding("UTF-8");
         format.setNewlines(true);
         format.setIndent(true);
@@ -124,4 +128,26 @@ public class XmlUtils {
     public static void closeStream() throws IOException {
         IN.close();
     }
+
+    /**
+     * 递归遍历元素，去除空行
+     *
+     * @param element 节点
+     */
+    private static void removeEmptyTextNodes(Element element) {
+        List<Node> nodes = new ArrayList<>(element.content());
+        for (Node node : nodes) {
+            if (node.getNodeType() == Node.TEXT_NODE) {
+                String text = node.getText().trim();
+                if (text.isEmpty()) {
+                    element.remove(node);
+                }
+            } else if (node.getNodeType() == Node.ELEMENT_NODE) {
+                removeEmptyTextNodes((Element) node);
+            }
+        }
+    }
+
+
+
 }

@@ -7,6 +7,7 @@ import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * redis starter
@@ -94,7 +95,7 @@ public class RedisStarter  extends StarterAdapter {
         yaml.addYamlConfig("spring.redis.database",config.getDatabase());
         yaml.addYamlConfig("spring.redis.host",config.getHost());
         yaml.addYamlConfig("spring.redis.port",config.getPort());
-        if (!config.getPassword().isEmpty()) {
+        if (StringUtils.isEmpty(config.getPassword())) {
             yaml.addYamlConfig("spring.redis.password", config.getPassword());
         }
     }
