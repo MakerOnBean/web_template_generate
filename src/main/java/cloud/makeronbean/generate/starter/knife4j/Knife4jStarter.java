@@ -1,11 +1,11 @@
 package cloud.makeronbean.generate.starter.knife4j;
 
 import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
-import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.utils.ProjectInfoUtils;
 
 /**
@@ -14,40 +14,41 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  * @description
  */
 public class Knife4jStarter extends StarterAdapter {
-    
+
     private Knife4jStarter() {
         this.order = 3;
     }
-    
+
     Knife4jConfig config = new Knife4jConfig();
-    
+
     public Knife4jStarter version(String version) {
         config.setVersion(version);
         return this;
     }
-    
+
     public Knife4jStarter title(String title) {
         config.setTitle(title);
         return this;
     }
-    
+
     public Knife4jStarter description(String description) {
         config.setDescription(description);
         return this;
     }
-    
-    
+
+
+
+
     @Override
     protected void addDependency(BaseDependency dependency) {
-        DependencyItem knife4j = new DependencyItem();
-        knife4j.setGroupId("com.github.xiaoymin");
-        knife4j.setTabName(DependencyConst.DEPENDENCY.getTabName());
-        knife4j.setArtifactId("knife4j-spring-boot-starter");
-        knife4j.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
-        knife4j.setVersion(config.getVersion());
+        DependencyItem knife4j = new DependencyItem()
+                .setPath(DependencyConst.DEPENDENCY)
+                .addTag(DependencyConst.GROUP_ID, "com.github.xiaoymin")
+                .addTag(DependencyConst.VERSION, config.getVersion())
+                .addTag(DependencyConst.ARTIFACT_ID, "knife4j-spring-boot-starter");
         dependency.addDependencyItem(knife4j);
     }
-    
+
     @Override
     protected void addCode(BaseCode code) {
         CodeItem knifeConfig = new CodeItem();

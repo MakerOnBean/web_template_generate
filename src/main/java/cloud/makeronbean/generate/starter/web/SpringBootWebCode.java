@@ -11,34 +11,34 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  */
 
 public class SpringBootWebCode {
-    
+
     private final BaseCode code;
     private final SpringBootWebConfig config;
-    
+
     SpringBootWebCode(SpringBootWebConfig config, BaseCode code) {
         this.code = code;
         this.config = config;
     }
-    
+
     public void fillData() {
         // 统一返回结果
         addCommonResult();
-        
+
         // 跨域
         if (config.isCors()) {
             addCors();
         }
-        
+
         // 断言
         if (config.isAssert()) {
             addAssert();
         }
-        
+
         // 全局异常处理
         addGlobalExceptionHandler(config);
     }
-    
-    
+
+
     /**
      * 全局异常处理
      */
@@ -68,7 +68,7 @@ public class SpringBootWebCode {
                         "public class GlobalExceptionHandler {\n" +
                         "    \n" +
                         "    private final Logger logger = LoggerFactory.getLogger(getClass());\n" +
-                        
+
                         (config.isValid() ?
                                 "    \n" +
                                         "    /**\n" +
@@ -147,7 +147,7 @@ public class SpringBootWebCode {
                                         "        // 包装 R 结果\n" +
                                         "        return R.error(ResultCode.INVALID_REQUEST_PARAM_ERROR).message(ResultCode.INVALID_REQUEST_PARAM_ERROR.getMessage() + \":\" + detailMessage);\n" +
                                         "    }\n" : "") +
-                        
+
                         (config.isAssert() ?
                                 "    \n" +
                                         "    \n" +
@@ -159,7 +159,7 @@ public class SpringBootWebCode {
                                         "    public R assertExceptionHandler(AssertException ex) {\n" +
                                         "        return R.error(ex.getCode());\n" +
                                         "    }\n" : "") +
-                        
+
                         "    \n" +
                         "    \n" +
                         "    /**\n" +
@@ -177,8 +177,8 @@ public class SpringBootWebCode {
         ));
         code.addCodeItem(globalHandler);
     }
-    
-    
+
+
     /**
      * 断言
      */
@@ -239,7 +239,7 @@ public class SpringBootWebCode {
                         "}", ProjectInfoUtils.basePackage, ProjectInfoUtils.basePackage
         ));
         code.addCodeItem(assertUtils);
-        
+
         CodeItem assertException = new CodeItem();
         assertException.setPath("common/exception");
         assertException.setFileName("AssertException.java");
@@ -259,8 +259,8 @@ public class SpringBootWebCode {
         ));
         code.addCodeItem(assertException);
     }
-    
-    
+
+
     /**
      * 创建统一返回值结果
      */
@@ -370,7 +370,7 @@ public class SpringBootWebCode {
                         "}"
         );
         code.addCodeItem(r);
-        
+
         CodeItem resultCode = new CodeItem();
         resultCode.setPath("common/result");
         resultCode.setFileName("ResultCode.java");
@@ -424,8 +424,8 @@ public class SpringBootWebCode {
         );
         code.addCodeItem(resultCode);
     }
-    
-    
+
+
     /**
      * 配置跨域
      */

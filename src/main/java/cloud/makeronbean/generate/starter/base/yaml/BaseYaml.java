@@ -10,11 +10,9 @@ import java.util.Map;
  */
 
 public class BaseYaml {
-    
-    
     private final Map<String, Object> configMap = new HashMap<>();
-    
-    
+
+
     /**
      * 填充配置map
      */

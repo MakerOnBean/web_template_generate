@@ -1,8 +1,8 @@
 package cloud.makeronbean.generate.handler;
 
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
-import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.utils.XmlUtils;
 
 import java.io.*;
@@ -31,13 +31,6 @@ public class PomHandler extends GenerateHandlerAdapter {
     
     @Override
     public void afterGenerate() throws IOException {
-        XmlUtils.refreshPom();
-        XmlUtils.closeStream();
-    }
-    
-    
-    @Override
-    public void beforeGenerate() {
-        XmlUtils.initPom();
+        XmlUtils.refreshAndClose();
     }
 }

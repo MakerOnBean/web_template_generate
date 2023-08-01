@@ -7,43 +7,43 @@ package cloud.makeronbean.generate.starter.redisson;
  */
 public class RedissonConfig {
     private String host = "localhost";
-    
+
     private Integer port = 6379;
-    
+
     private Integer database = 0;
-    
+
     private String version = "3.13.6";
 
     private String password;
-    
+
     String getHost() {
         return host;
     }
-    
+
     void setHost(String host) {
         this.host = host;
     }
-    
+
     Integer getPort() {
         return port;
     }
-    
+
     void setPort(Integer port) {
         this.port = port;
     }
-    
+
     Integer getDatabase() {
         return database;
     }
-    
+
     void setDatabase(Integer database) {
         this.database = database;
     }
-    
+
     String getVersion() {
         return version;
     }
-    
+
     void setVersion(String version) {
         this.version = version;
     }

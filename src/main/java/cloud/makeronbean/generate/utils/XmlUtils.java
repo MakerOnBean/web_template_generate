@@ -6,7 +6,6 @@ import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.dom4j.xpath.DefaultXPath;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -27,7 +26,7 @@ public class XmlUtils {
     private static final InputStream IN;
     private static final String URL = "http://maven.apache.org/POM/4.0.0";
     private static final Map<String, String> namespaceURIs;
-
+    private static final Element projectElement;
 
     static {
         namespaceURIs = new HashMap<>();
@@ -38,29 +37,39 @@ public class XmlUtils {
         try {
             IN = new FileInputStream(POM_FILE);
             DOCUMENT = new SAXReader().read(IN);
+            projectElement = (Element) DOCUMENT.selectSingleNode(DependencyConst.PROJECT.getTabName());
         } catch (DocumentException | FileNotFoundException e) {
-            throw new RuntimeException("pom文件操作失败", e);
+            throw new RuntimeException("pom 文件操作失败", e);
         }
     }
 
 
     /**
-     * 创建基本的pom标签
+     * 如果不存在标签则创建它，如果是最底层标签，则无论是否存在都会创建
+     *
+     * @param path        标签路径 eg：dependencies/dependency
+     * @param fromElement 根标签的上一级标签
+     * @return 最下层创建的标签
      */
-    public static void initPom() {
-        Element project = (Element) DOCUMENT.selectSingleNode(DependencyConst.PROJECT.getTabName());
-        // 创建 dependencies
-        Element dependencies = DOCUMENT.getRootElement().element(DependencyConst.DEPENDENCIES.getTabName());
-        if (dependencies == null) {
-            project.addElement(DependencyConst.DEPENDENCIES.getTabName(), URL);
+    private static Element createTagIfNotExist(String path, Element fromElement) {
+        int index = path.indexOf("/");
+        String targetTag;
+        if (index == -1) {
+            targetTag = path;
+            path = null;
+        } else {
+            targetTag = path.substring(0, index);
+            path = path.substring(index + 1);
+        }
+        Element targetElement = fromElement.element(targetTag);
+        if (targetElement == null || path == null) {
+            targetElement = fromElement.addElement(targetTag, URL);
         }
 
-        // 创建build
-        Element build = DOCUMENT.getRootElement().element(DependencyConst.BUILD.getTabName());
-        if (build == null) {
-            build = project.addElement(DependencyConst.BUILD.getTabName(), URL);
-            // 创建plugins
-            build.addElement(DependencyConst.PLUGINS.getTabName(), URL);
+        if (path == null) {
+            return targetElement;
+        } else {
+            return createTagIfNotExist(path, targetElement);
         }
     }
 
@@ -79,36 +88,38 @@ public class XmlUtils {
 
     /**
      * 添加节点
+     *
+     * @param dependencyItem 节点信息
      */
     public static void addNode(DependencyItem dependencyItem) {
-        XPath xpath = new DefaultXPath("//a:" + dependencyItem.getParentNodeName());
-        xpath.setNamespaceURIs(namespaceURIs);
-        Element parentElement = (Element) xpath.selectSingleNode(DOCUMENT);
+        addNode(dependencyItem, projectElement);
+    }
 
-        Element parentTab = parentElement.addElement(dependencyItem.getTabName(), URL);
+    /**
+     * 添加节点
+     *
+     * @param dependencyItem 节点信息
+     * @param element        包含节点的标签
+     */
+    private static void addNode(DependencyItem dependencyItem, Element element) {
+        String path = dependencyItem.getPath();
+        Element targetElement = createTagIfNotExist(path, element);
 
-        parentTab.addElement(DependencyConst.GROUP_ID.getTabName(), URL).addText(dependencyItem.getGroupId());
-
-        parentTab.addElement(DependencyConst.ARTIFACT_ID.getTabName(), URL).addText(dependencyItem.getArtifactId());
-
-        if (dependencyItem.getVersion() != null) {
-            parentTab.addElement(DependencyConst.VERSION.getTabName(), URL).addText(dependencyItem.getVersion());
+        Map<String, String> tags = dependencyItem.getTags();
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            targetElement.addElement(entry.getKey()).addText(entry.getValue());
         }
 
-        if (dependencyItem.getOptional() != null) {
-            parentTab.addElement(DependencyConst.OPTIONAL.getTabName(), URL).addText(dependencyItem.getOptional());
-        }
-
-        if (dependencyItem.getScope() != null) {
-            parentTab.addElement(DependencyConst.SCOPE.getTabName(), URL).addText(dependencyItem.getScope());
+        List<DependencyItem> child = dependencyItem.getChild();
+        for (DependencyItem childItem : child) {
+            addNode(childItem, targetElement);
         }
     }
 
-
     /**
-     * 刷新pom
+     * 将内存中的 xml 写入磁盘，并关闭流
      */
-    public static void refreshPom() throws IOException {
+    public static void refreshAndClose() throws IOException {
         removeEmptyTextNodes(DOCUMENT.getRootElement());
 
         OutputFormat format = OutputFormat.createPrettyPrint();
@@ -118,16 +129,9 @@ public class XmlUtils {
         format.setIndentSize(4);
         XMLWriter xmlWriter = new XMLWriter(Files.newOutputStream(POM_FILE.toPath()), format);
         xmlWriter.write(DOCUMENT);
-        xmlWriter.close();
-    }
-
-
-    /**
-     * 关闭流
-     */
-    public static void closeStream() throws IOException {
         IN.close();
     }
+
 
     /**
      * 递归遍历元素，去除空行
@@ -147,7 +151,6 @@ public class XmlUtils {
             }
         }
     }
-
 
 
 }

@@ -15,8 +15,12 @@ import cloud.makeronbean.generate.utils.StringUtils;
  * @author beanMak1r
  * @since 2023-08-01 07:50
  */
-public class RedisStarter  extends StarterAdapter {
+public class RedisStarter extends StarterAdapter {
     private final RedisConfig config = new RedisConfig();
+
+    private RedisStarter() {
+        this.order = 3;
+    }
 
     public RedisStarter host(String host) {
         config.setHost(host);
@@ -44,18 +48,16 @@ public class RedisStarter  extends StarterAdapter {
 
     @Override
     protected void addDependency(BaseDependency dependency) {
-        DependencyItem redis = new DependencyItem();
-        redis.setGroupId("org.springframework.boot");
-        redis.setArtifactId("spring-boot-starter-data-redis");
-        redis.setTabName(DependencyConst.DEPENDENCY.getTabName());
-        redis.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
+        DependencyItem redis = new DependencyItem()
+                .setPath(DependencyConst.DEPENDENCY)
+                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
+                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-data-redis");
         dependency.addDependencyItem(redis);
 
-        DependencyItem redisPool = new DependencyItem();
-        redisPool.setGroupId("org.apache.commons");
-        redisPool.setArtifactId("commons-pool2");
-        redisPool.setTabName(DependencyConst.DEPENDENCY.getTabName());
-        redisPool.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
+        DependencyItem redisPool = new DependencyItem()
+                .setPath(DependencyConst.DEPENDENCY)
+                .addTag(DependencyConst.GROUP_ID, "org.apache.commons")
+                .addTag(DependencyConst.ARTIFACT_ID, "commons-pool2");
         dependency.addDependencyItem(redisPool);
     }
 
@@ -92,10 +94,10 @@ public class RedisStarter  extends StarterAdapter {
 
     @Override
     protected void addYaml(BaseYaml yaml) {
-        yaml.addYamlConfig("spring.redis.database",config.getDatabase());
-        yaml.addYamlConfig("spring.redis.host",config.getHost());
-        yaml.addYamlConfig("spring.redis.port",config.getPort());
-        if (StringUtils.isEmpty(config.getPassword())) {
+        yaml.addYamlConfig("spring.redis.database", config.getDatabase());
+        yaml.addYamlConfig("spring.redis.host", config.getHost());
+        yaml.addYamlConfig("spring.redis.port", config.getPort());
+        if (!StringUtils.isEmpty(config.getPassword())) {
             yaml.addYamlConfig("spring.redis.password", config.getPassword());
         }
     }

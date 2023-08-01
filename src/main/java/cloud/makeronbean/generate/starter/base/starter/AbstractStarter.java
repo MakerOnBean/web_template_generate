@@ -17,7 +17,7 @@ public abstract class AbstractStarter {
     /**
      * 加载顺序
      */
-    protected Integer order;
+    protected Integer order = 10;
     
     private final BaseCode code = new BaseCode();
     

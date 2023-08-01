@@ -7,12 +7,12 @@ package cloud.makeronbean.generate.starter.lombok;
  */
 public class LombokConfig {
     private String version = "1.18.26";
-    
-    
+
+
     String getVersion() {
         return version;
     }
-    
+
     void setVersion(String version) {
         this.version = version;
     }

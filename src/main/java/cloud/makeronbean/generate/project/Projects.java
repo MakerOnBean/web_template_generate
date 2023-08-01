@@ -5,6 +5,7 @@ import cloud.makeronbean.generate.starter.base.factory.StarterFactorySingleImpl;
 import cloud.makeronbean.generate.starter.knife4j.Knife4jStarter;
 import cloud.makeronbean.generate.starter.lombok.LombokStarter;
 import cloud.makeronbean.generate.starter.mybatisplus.MyBatisPlusStarter;
+import cloud.makeronbean.generate.starter.mysql.MySqlStarter;
 import cloud.makeronbean.generate.starter.parent.SpringBootParentStarter;
 import cloud.makeronbean.generate.starter.redis.RedisStarter;
 import cloud.makeronbean.generate.starter.redisson.RedissonStarter;
@@ -36,7 +37,9 @@ public class Projects {
         SpringBootWebStarter webStarter = FACTORY.getInstance(SpringBootWebStarter.class);
         
         MyBatisPlusStarter myBatisPlusStarter = FACTORY.getInstance(MyBatisPlusStarter.class);
-        myBatisPlusStarter.dbName(dbName).password(dbPassword);
+
+        MySqlStarter mySqlStarter = FACTORY.getInstance(MySqlStarter.class);
+        mySqlStarter.dbName(dbName).password(dbPassword);
         
         LombokStarter lombokStarter = FACTORY.getInstance(LombokStarter.class);
         
@@ -47,6 +50,7 @@ public class Projects {
         return PROJECT
                 .addStarter(parentStarter)
                 .addStarter(webStarter)
+                .addStarter(mySqlStarter)
                 .addStarter(myBatisPlusStarter)
                 .addStarter(lombokStarter)
                 .addStarter(knife4jStarter)
@@ -67,18 +71,22 @@ public class Projects {
         PROJECT = new Project();
         
         SpringBootParentStarter parentStarter = FACTORY.getInstance(SpringBootParentStarter.class);
+
         SpringBootWebStarter webStarter = FACTORY.getInstance(SpringBootWebStarter.class);
         webStarter.asserts(false);
         webStarter.valid(false);
-        
+
         MyBatisPlusStarter myBatisPlusStarter = FACTORY.getInstance(MyBatisPlusStarter.class);
-        myBatisPlusStarter.dbName(dbName).password(dbPassword);
-    
+
+        MySqlStarter mySqlStarter = FACTORY.getInstance(MySqlStarter.class);
+        mySqlStarter.dbName(dbName).password(dbPassword);
+
         LombokStarter lombokStarter = FACTORY.getInstance(LombokStarter.class);
         
         return PROJECT
                 .addStarter(parentStarter)
                 .addStarter(webStarter)
+                .addStarter(mySqlStarter)
                 .addStarter(myBatisPlusStarter)
                 .addStarter(lombokStarter);
     }

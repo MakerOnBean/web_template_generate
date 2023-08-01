@@ -1,11 +1,11 @@
 package cloud.makeronbean.generate.starter.parent;
 
 import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
-import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
 
 /**
@@ -15,75 +15,81 @@ import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
  */
 public class SpringBootParentStarter extends StarterAdapter {
     private final SpringBootParentConfig config = new SpringBootParentConfig();
-    
-    
+
+
+    private SpringBootParentStarter() {
+        this.order = 1;
+    }
+
     public SpringBootParentStarter yamlAppName(String yamlAppName) {
         config.setYamlAppName(yamlAppName);
         return this;
     }
-    
+
     public SpringBootParentStarter mainBootName(String mainBootName) {
         config.setMainBootName(mainBootName);
         return this;
     }
-    
+
     public SpringBootParentStarter devtools(boolean open) {
         config.setDevtools(open);
         return this;
     }
-    
+
     public SpringBootParentStarter test(boolean open) {
         config.setTest(open);
         return this;
     }
-    
+
+    public SpringBootParentStarter version(String version) {
+        config.setVersion(version);
+        return this;
+    }
+
     @Override
     protected void addDependency(BaseDependency dependency) {
-        DependencyItem parent = new DependencyItem();
-        parent.setTabName(DependencyConst.PARENT.getTabName());
-        parent.setGroupId("org.springframework.boot");
-        parent.setArtifactId("spring-boot-starter-parent");
-        parent.setVersion("2.3.6.RELEASE");
-        parent.setParentNodeName(DependencyConst.PROJECT.getTabName());
+        DependencyItem parent = new DependencyItem()
+                .setPath(DependencyConst.PARENT)
+                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
+                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-parent")
+                .addTag(DependencyConst.VERSION, config.getVersion());
         dependency.addDependencyItem(parent);
-        
-        DependencyItem plugin = new DependencyItem();
-        plugin.setTabName(DependencyConst.PLUGIN.getTabName());
-        plugin.setGroupId("org.springframework.boot");
-        plugin.setArtifactId("spring-boot-maven-plugin");
-        plugin.setVersion("2.3.6.RELEASE");
-        plugin.setParentNodeName(DependencyConst.PLUGINS.getTabName());
+
+        DependencyItem plugin = new DependencyItem()
+                .setPath(DependencyConst.PLUGIN)
+                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
+                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-maven-plugin")
+                .addTag(DependencyConst.VERSION, config.getVersion());
         dependency.addDependencyItem(plugin);
-        
+
         // devtools
         if (config.isDevtools()) {
-            DependencyItem devtools = new DependencyItem();
-            devtools.setGroupId("org.springframework.boot");
-            devtools.setTabName(DependencyConst.DEPENDENCY.getTabName());
-            devtools.setArtifactId("spring-boot-devtools");
-            devtools.setScope("runtime");
-            devtools.setOptional("true");
-            devtools.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
+            DependencyItem devtools = new DependencyItem()
+                    .setPath(DependencyConst.DEPENDENCY)
+                    .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
+                    .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-devtools")
+                    .addTag(DependencyConst.SCOPE, "runtime")
+                    .addTag(DependencyConst.OPTIONAL, "true");
+
             dependency.addDependencyItem(devtools);
         }
-        
+
         //test
         if (config.isTest()) {
-            DependencyItem test = new DependencyItem();
-            test.setGroupId("org.springframework.boot");
-            test.setArtifactId("spring-boot-starter-test");
-            test.setScope("test");
-            test.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
-            test.setTabName(DependencyConst.DEPENDENCY.getTabName());
+            DependencyItem test = new DependencyItem()
+                    .setPath(DependencyConst.DEPENDENCY)
+                    .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
+                    .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-test")
+                    .addTag(DependencyConst.SCOPE, "test");
             dependency.addDependencyItem(test);
         }
     }
-    
+
     @Override
     protected void addYaml(BaseYaml yaml) {
         yaml.addYamlConfig("spring.application.name", config.getYamlAppName());
     }
-    
+
     @Override
     protected void addCode(BaseCode code) {
         String bootName = config.getMainBootName();

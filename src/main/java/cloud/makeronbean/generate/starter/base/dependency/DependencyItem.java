@@ -1,5 +1,9 @@
 package cloud.makeronbean.generate.starter.base.dependency;
 
+import cloud.makeronbean.generate.constant.DependencyConst;
+
+import java.util.*;
+
 /**
  * @author makeronbean
  * @createDate 2023-05-02  21:34
@@ -7,94 +11,51 @@ package cloud.makeronbean.generate.starter.base.dependency;
  */
 
 public class DependencyItem {
-    /**
-     * groupId
-     */
-    protected String groupId;
-    
-    /**
-     * artifactId
-     */
-    protected String artifactId;
-    
-    /**
-     * version
-     */
-    protected String version;
-    
-    /**
-     * scope
-     */
-    protected String scope;
-    
-    /**
-     * optional
-     */
-    protected String optional;
-    
-    /**
-     * 标签名称
-     */
-    protected String tabName;
-    
-    /**
-     * 父节点名称
-     */
-    protected String parentNodeName;
-    
-    public String getGroupId() {
-        return groupId;
+    private String path;
+
+    private final Map<String, String> tags;
+
+    private final List<DependencyItem> child;
+
+    public DependencyItem() {
+        tags = new HashMap<>();
+        child = new LinkedList<>();
     }
-    
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+
+    public String getPath() {
+        return path;
     }
-    
-    public String getArtifactId() {
-        return artifactId;
+
+    public DependencyItem setPath(String path) {
+        this.path = path;
+        return this;
     }
-    
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
+
+    public DependencyItem setPath(DependencyConst dependencyConst) {
+        this.path = dependencyConst.getTabName();
+        return this;
     }
-    
-    public String getVersion() {
-        return version;
+
+    public DependencyItem addTag(String tag, String value) {
+        tags.put(tag, value);
+        return this;
     }
-    
-    public void setVersion(String version) {
-        this.version = version;
+
+    public DependencyItem addTag(DependencyConst dependencyConst, String value) {
+        tags.put(dependencyConst.getTabName(), value);
+        return this;
     }
-    
-    public String getScope() {
-        return scope;
+
+    public Map<String, String> getTags() {
+        return tags;
     }
-    
-    public void setScope(String scope) {
-        this.scope = scope;
+
+    public DependencyItem addChild(DependencyItem... dependencyItem2s) {
+        child.addAll(Arrays.asList(dependencyItem2s));
+        return this;
     }
-    
-    public String getOptional() {
-        return optional;
-    }
-    
-    public void setOptional(String optional) {
-        this.optional = optional;
-    }
-    
-    public String getTabName() {
-        return tabName;
-    }
-    
-    public void setTabName(String tabName) {
-        this.tabName = tabName;
-    }
-    
-    public String getParentNodeName() {
-        return parentNodeName;
-    }
-    
-    public void setParentNodeName(String parentNodeName) {
-        this.parentNodeName = parentNodeName;
+
+    public List<DependencyItem> getChild() {
+        return child;
     }
 }

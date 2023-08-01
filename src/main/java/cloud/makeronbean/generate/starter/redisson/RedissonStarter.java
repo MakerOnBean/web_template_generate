@@ -1,9 +1,9 @@
 package cloud.makeronbean.generate.starter.redisson;
 
 import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
-import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
 
 /**
@@ -12,19 +12,23 @@ import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
  * @description
  */
 public class RedissonStarter extends StarterAdapter {
-    
+
     private final RedissonConfig config = new RedissonConfig();
-    
+
+    private RedissonStarter() {
+        this.order = 3;
+    }
+
     public RedissonStarter host(String host) {
         config.setHost(host);
         return this;
     }
-    
+
     public RedissonStarter port(Integer port) {
         config.setPort(port);
         return this;
     }
-    
+
     public RedissonStarter database(Integer database) {
         if (database > 15) {
             System.out.println("The value of database ranges from 0 to 15");
@@ -33,7 +37,7 @@ public class RedissonStarter extends StarterAdapter {
         config.setDatabase(database);
         return this;
     }
-    
+
     public RedissonStarter version(String version) {
         config.setVersion(version);
         return this;
@@ -46,15 +50,14 @@ public class RedissonStarter extends StarterAdapter {
 
     @Override
     protected void addDependency(BaseDependency dependency) {
-        DependencyItem redisson = new DependencyItem();
-        redisson.setGroupId("org.redisson");
-        redisson.setTabName(DependencyConst.DEPENDENCY.getTabName());
-        redisson.setArtifactId("redisson-spring-boot-starter");
-        redisson.setVersion(config.getVersion());
-        redisson.setParentNodeName(DependencyConst.DEPENDENCIES.getTabName());
+        DependencyItem redisson = new DependencyItem()
+                .setPath(DependencyConst.DEPENDENCY)
+                .addTag(DependencyConst.GROUP_ID, "org.redisson")
+                .addTag(DependencyConst.ARTIFACT_ID, "redisson-spring-boot-starter")
+                .addTag(DependencyConst.VERSION, config.getVersion());
         dependency.addDependencyItem(redisson);
     }
-    
+
     @Override
     protected void addYaml(BaseYaml yaml) {
         yaml.addYamlConfig("spring.redis.redisson.config", String.format(
@@ -84,5 +87,5 @@ public class RedissonStarter extends StarterAdapter {
                 config.getDatabase()
         ));
     }
-    
+
 }

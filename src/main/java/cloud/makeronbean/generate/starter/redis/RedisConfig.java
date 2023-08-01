@@ -13,7 +13,7 @@ public class RedisConfig {
 
     private Integer database = 0;
 
-    private String password;
+    private String password = null;
 
     String getHost() {
         return host;

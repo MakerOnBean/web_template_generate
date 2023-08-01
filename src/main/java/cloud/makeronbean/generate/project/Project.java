@@ -9,6 +9,7 @@ import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapter;
 import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapterImpl;
 import cloud.makeronbean.generate.utils.ProjectInfoUtils;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,25 +21,25 @@ import java.util.stream.Collectors;
  */
 
 public class Project {
-    
+
     /**
      * starter项列表
      */
     private final List<AbstractStarter> starterList;
-    
+
     /**
      * 处理器列表
      */
     private final List<GenerateHandler> generateHandlerList;
-    
+
     private final StarterBridgeAdapter starterBridgeAdapter = new StarterBridgeAdapterImpl();
-    
+
     Project() {
         generateHandlerList = getHandlerList();
         this.starterList = new LinkedList<>();
     }
-    
-    
+
+
     /**
      * 初始化处理器列表
      *
@@ -52,8 +53,8 @@ public class Project {
         generateHandlerList.add(new YamlHandler());
         return generateHandlerList;
     }
-    
-    
+
+
     /**
      * 添加启动Starter
      *
@@ -68,8 +69,8 @@ public class Project {
         starterList.add(starter);
         return this;
     }
-    
-    
+
+
     /**
      * 通过类型获取starter
      *
@@ -85,20 +86,21 @@ public class Project {
         }
         return null;
     }
-    
-    
+
+
     /**
      * 根据类型删除starter
+     *
      * @param clazz starter子类型
-     * @return this
      * @param <T>
+     * @return this
      */
     public <T> Project deleteStarterByType(Class<T> clazz) {
         starterList.removeIf(starter -> starter.getClass().equals(clazz));
         return this;
     }
-    
-    
+
+
     /**
      * 设置基本包路径
      *
@@ -109,8 +111,8 @@ public class Project {
         ProjectInfoUtils.basePackage = basePackage;
         return this;
     }
-    
-    
+
+
     /**
      * 添加 生成处理器
      *
@@ -125,8 +127,8 @@ public class Project {
         this.generateHandlerList.add(handler);
         return this;
     }
-    
-    
+
+
     /**
      * 根据类型删除 生成处理器
      *
@@ -138,8 +140,8 @@ public class Project {
         this.generateHandlerList.removeIf(handler -> handler.getClass().equals(clazz));
         return this;
     }
-    
-    
+
+
     public void generate() {
         List<AbstractStarter> executeStarterList = null;
         List<GenerateHandler> executeHandlerList = null;
@@ -148,26 +150,19 @@ public class Project {
             executeStarterList = starterList
                     .stream()
                     .distinct()
-                    .sorted((o1, o2) -> {
-                        if (o1.getOrder() == null) {
-                            return -1;
-                        } else if (o2.getOrder() == null) {
-                            return 1;
-                        }
-                        return o1.getOrder().compareTo(o2.getOrder());
-                    })
+                    .sorted(Comparator.comparing(AbstractStarter::getOrder))
                     .collect(Collectors.toList());
-            
+
             executeHandlerList = generateHandlerList
                     .stream()
                     .distinct()
                     .collect(Collectors.toList());
-    
+
             // 前置工作
             for (GenerateHandler handler : executeHandlerList) {
                 handler.beforeGenerate();
             }
-            
+
             // 生成
             for (AbstractStarter starter : executeStarterList) {
                 starterBridgeAdapter.loadStarter(starter);
@@ -175,7 +170,7 @@ public class Project {
                     handler.generateHandler(starter);
                 }
             }
-            
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
