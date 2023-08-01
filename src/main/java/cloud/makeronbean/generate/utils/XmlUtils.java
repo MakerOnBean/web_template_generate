@@ -25,8 +25,8 @@ public class XmlUtils {
     private static final InputStream IN;
     private static final String URL = "http://maven.apache.org/POM/4.0.0";
     private static final Map<String, String> namespaceURIs;
-    
-    
+
+
     static {
         namespaceURIs = new HashMap<>();
         namespaceURIs.put("a", "http://maven.apache.org/POM/4.0.0");
@@ -40,8 +40,8 @@ public class XmlUtils {
             throw new RuntimeException("pom文件操作失败", e);
         }
     }
-    
-    
+
+
     /**
      * 创建基本的pom标签
      */
@@ -52,7 +52,7 @@ public class XmlUtils {
         if (dependencies == null) {
             project.addElement(DependencyConst.DEPENDENCIES.getTabName(), URL);
         }
-        
+
         // 创建build
         Element build = DOCUMENT.getRootElement().element(DependencyConst.BUILD.getTabName());
         if (build == null) {
@@ -61,8 +61,8 @@ public class XmlUtils {
             build.addElement(DependencyConst.PLUGINS.getTabName(), URL);
         }
     }
-    
-    
+
+
     /**
      * 获取单个节点
      *
@@ -73,36 +73,36 @@ public class XmlUtils {
         Element element = DOCUMENT.getRootElement();
         return element.element(key).getStringValue();
     }
-    
-    
+
+
     /**
      * 添加节点
      */
     public static void addNode(DependencyItem dependencyItem) {
-        XPath xpath = new DefaultXPath("//a:"+dependencyItem.getParentNodeName());
+        XPath xpath = new DefaultXPath("//a:" + dependencyItem.getParentNodeName());
         xpath.setNamespaceURIs(namespaceURIs);
-        Element parentElement = (Element)xpath.selectSingleNode(DOCUMENT);
-        
+        Element parentElement = (Element) xpath.selectSingleNode(DOCUMENT);
+
         Element parentTab = parentElement.addElement(dependencyItem.getTabName(), URL);
-        
+
         parentTab.addElement(DependencyConst.GROUP_ID.getTabName(), URL).addText(dependencyItem.getGroupId());
-        
+
         parentTab.addElement(DependencyConst.ARTIFACT_ID.getTabName(), URL).addText(dependencyItem.getArtifactId());
-        
+
         if (dependencyItem.getVersion() != null) {
             parentTab.addElement(DependencyConst.VERSION.getTabName(), URL).addText(dependencyItem.getVersion());
         }
-        
+
         if (dependencyItem.getOptional() != null) {
             parentTab.addElement(DependencyConst.OPTIONAL.getTabName(), URL).addText(dependencyItem.getOptional());
         }
-        
+
         if (dependencyItem.getScope() != null) {
             parentTab.addElement(DependencyConst.SCOPE.getTabName(), URL).addText(dependencyItem.getScope());
         }
     }
-    
-    
+
+
     /**
      * 刷新pom
      */
@@ -116,8 +116,8 @@ public class XmlUtils {
         xmlWriter.write(DOCUMENT);
         xmlWriter.close();
     }
-    
-    
+
+
     /**
      * 关闭流
      */

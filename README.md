@@ -113,6 +113,17 @@ lombokStarter
         // lombok版本，默认'1.18.26'
         .version("1.18.26");
 
+// redisTemplate
+RedisStarter redisStarter = factory.getInstance(RedisStarter.class)
+        // redis 服务器ip，默认本地地址
+        .host("localhost")
+        // redis端口号，默认 6379
+        .port(6379)
+        // 密码，默认无
+        .password("123456")
+        // 哪个数据库，取值0～15，默认0
+        .database(1);
+
 // redisson 场景依赖，暂支持单机配置
 RedissonStarter redissonStarter = factory.getInstance(RedissonStarter.class);
 redissonStarter
@@ -142,6 +153,7 @@ customerProject
         .addStarter(webStarter)
         .addStarter(myBatisPlusStarter)
         .addStarter(lombokStarter)
+			  .addStarter(redisStarter)
         .addStarter(redissonStarter)
         .addStarter(knife4jStarter);
 ```

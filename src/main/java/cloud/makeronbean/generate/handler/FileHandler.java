@@ -26,11 +26,11 @@ public class FileHandler extends GenerateHandlerAdapter {
      * @param codeItem 代码项
      * @throws IOException
      */
-    public void write(CodeItem codeItem) throws IOException {
+    private void write(CodeItem codeItem) throws IOException {
         String path = codeItem.getPath();
         String filePath = ProjectInfoUtils.getJavaPath();
         
-        if (path != null && path.length() > 0) {
+        if (path != null && !path.isEmpty()) {
             filePath += "/" + path;
         }
         
@@ -60,6 +60,6 @@ public class FileHandler extends GenerateHandlerAdapter {
     
     @Override
     public void beforeGenerate() throws Exception {
-        FileUtils.initProject();
+        FileUtils.initFile();
     }
 }

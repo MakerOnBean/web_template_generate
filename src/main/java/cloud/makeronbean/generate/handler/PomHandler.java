@@ -14,17 +14,7 @@ import java.io.*;
  */
 
 public class PomHandler extends GenerateHandlerAdapter {
-    
-    /**
-     * 将内存中的xml写到文件中
-     *
-     * @throws IOException
-     */
-    public void refresh() throws IOException {
-        XmlUtils.refreshPom();
-    }
-    
-    
+
     /**
      * 处理方法
      */
@@ -41,7 +31,7 @@ public class PomHandler extends GenerateHandlerAdapter {
     
     @Override
     public void afterGenerate() throws IOException {
-        refresh();
+        XmlUtils.refreshPom();
         XmlUtils.closeStream();
     }
     

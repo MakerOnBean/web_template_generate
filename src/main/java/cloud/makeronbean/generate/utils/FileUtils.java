@@ -46,7 +46,7 @@ public class FileUtils {
     /**
      * 创建项目基本文件
      */
-    public static void initProject() {
+    public static void initFile() {
         // 生成基本文件夹
         for (String s : BASE_PACKAGE) {
             FileUtils.mkdir(ProjectInfoUtils.getJavaPath(), s);

@@ -6,6 +6,7 @@ import cloud.makeronbean.generate.starter.knife4j.Knife4jStarter;
 import cloud.makeronbean.generate.starter.lombok.LombokStarter;
 import cloud.makeronbean.generate.starter.mybatisplus.MyBatisPlusStarter;
 import cloud.makeronbean.generate.starter.parent.SpringBootParentStarter;
+import cloud.makeronbean.generate.starter.redis.RedisStarter;
 import cloud.makeronbean.generate.starter.redisson.RedissonStarter;
 import cloud.makeronbean.generate.starter.web.SpringBootWebStarter;
 
@@ -40,16 +41,16 @@ public class Projects {
         LombokStarter lombokStarter = FACTORY.getInstance(LombokStarter.class);
         
         Knife4jStarter knife4jStarter = FACTORY.getInstance(Knife4jStarter.class);
-        
-        RedissonStarter redissonStarter = FACTORY.getInstance(RedissonStarter.class);
-        
+
+        RedisStarter redisStarter = FACTORY.getInstance(RedisStarter.class);
+
         return PROJECT
                 .addStarter(parentStarter)
                 .addStarter(webStarter)
                 .addStarter(myBatisPlusStarter)
                 .addStarter(lombokStarter)
                 .addStarter(knife4jStarter)
-                .addStarter(redissonStarter);
+                .addStarter(redisStarter);
     }
     
     
@@ -90,7 +91,6 @@ public class Projects {
      */
     public static Project customer() {
         checkExist();
-    
         return new Project();
     }
     

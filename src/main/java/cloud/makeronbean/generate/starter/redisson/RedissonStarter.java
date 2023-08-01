@@ -38,7 +38,12 @@ public class RedissonStarter extends StarterAdapter {
         config.setVersion(version);
         return this;
     }
-    
+
+    public RedissonStarter password(String password) {
+        config.setPassword(password);
+        return this;
+    }
+
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem redisson = new DependencyItem();
@@ -59,7 +64,7 @@ public class RedissonStarter extends StarterAdapter {
                         "  timeout: 3000\n" +
                         "  retryAttempts: 3\n" +
                         "  retryInterval: 1500\n" +
-                        "  password: null\n" +
+                        "  password: %s\n" +
                         "  subscriptionsPerConnection: 5\n" +
                         "  clientName: null\n" +
                         "  address: \"redis://%s:%d\"\n" +
@@ -73,6 +78,7 @@ public class RedissonStarter extends StarterAdapter {
                         "nettyThreads: 32\n" +
                         "codec: !<org.redisson.codec.JsonJacksonCodec> {}\n" +
                         "transportMode: \"NIO\"",
+                config.getPassword(),
                 config.getHost(),
                 config.getPort(),
                 config.getDatabase()

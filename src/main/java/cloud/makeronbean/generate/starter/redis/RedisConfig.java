@@ -1,58 +1,49 @@
-package cloud.makeronbean.generate.starter.redisson;
+package cloud.makeronbean.generate.starter.redis;
 
 /**
- * @author makeronbean
- * @createDate 2023-05-04  09:18
- * @description
+ * redis 配置类
+ *
+ * @author beanMak1r
+ * @since 2023-08-01 07:50
  */
-public class RedissonConfig {
+public class RedisConfig {
     private String host = "localhost";
-    
+
     private Integer port = 6379;
-    
+
     private Integer database = 0;
-    
-    private String version = "3.13.6";
 
     private String password;
-    
+
     String getHost() {
         return host;
     }
-    
+
     void setHost(String host) {
         this.host = host;
     }
-    
+
     Integer getPort() {
         return port;
     }
-    
+
     void setPort(Integer port) {
         this.port = port;
     }
-    
+
     Integer getDatabase() {
         return database;
     }
-    
+
     void setDatabase(Integer database) {
         this.database = database;
     }
-    
-    String getVersion() {
-        return version;
-    }
-    
-    void setVersion(String version) {
-        this.version = version;
-    }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
     }
 }
