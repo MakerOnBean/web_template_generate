@@ -4,6 +4,10 @@
 
 生成的内容包括`maven依赖`、`yaml配置`、`基本模板代码`，同时也支持自定义生成器
 
+v2.0 基于 MyBatisFlex 代码生成器进行二次开发，保持 v1.0 功能的同时，支持根据表生成对应的业务类
+
+
+
 # 快速开始
 
 第一步：下载lib文件夹中的jar包
@@ -15,12 +19,27 @@
 第四步：在项目任意地方，编写一个类，用于生成模版代码，参考如下
 
 ```java
-import cloud.makeronbean.generate.project.Projects;
+import tech.beanmak1r.generate.project.Project;
+import tech.beanmak1r.generate.project.Projects;
+import tech.beanmak1r.generate.starter.datebase.mybatis.MyBatisGenerateConfig;
 
-public class MainTest {
+/**
+ * 效果演示
+ */
+public class Main {
     public static void main(String[] args) {
-        // 参数1：数据名称 参数2：数据库密码
-        Projects.simple("db_test","123321").generate();
+        // MyBatis 生成器配置对象
+        MyBatisGenerateConfig myBatisGenerateConfig = new MyBatisGenerateConfig();
+        // 生成实体类时，忽略表的前缀
+        myBatisGenerateConfig.setTablePrefix("tb_");
+        // 需要生成的表
+        myBatisGenerateConfig.setGenerateTable("tb_user", "tb_account");
+        // 获取 Project 对象 参数1数据库名称 参数2数据库用户密码
+        Project project = Projects.all("db_flex", "dk18111448638", myBatisGenerateConfig);
+        // 设置 作者
+        project.setAuthor("beanmak1r");
+        // 执行生成
+        project.generate();
     }
 }
 ```
@@ -41,19 +60,62 @@ public class MainTest {
 
 ## 模板可选项
 
-默认支持生成`Spring boot parent`、`Spring boot Web`、`Spring boot Validation`、`Mybatis-Plus`、`Lombok`、`redisson`、`knife4j`的模版代码。可以通过`Projects`工具类快速构建需要的模板
+默认支持生成`Spring boot parent`、`Spring boot Web`、`Spring boot Validation`、`Mybatis-Plus`、`Mybatis-Flex`、`Lombok`、`RedisTemplate`、`SpringDoc`、`redisson`、的模版代码。可以通过`Projects`工具类快速构建需要的模板
 
-装配简单模板(`Spring boot + SSM + lombok`)
+> knife4j 已被移除，由 SpringFox 替代
 
-```java
-Project simpleProject = Projects.simple("db_test", "123456");
-```
 
-装配所有模板
+
+装配简单模板(`Spring boot + SpringWeb + MybatisFlex + lombok`)
 
 ```java
-Project allProject = Projects.all("db_test", "123456");
+/**
+ * 简单配置 ssm + lombok
+ *
+ * @param dbName     数据库名称
+ * @param dbPassword 数据库密码
+ * @return Project对象
+ */
+public static Project simple(String dbName, String dbPassword);
+
+
+/**
+ * 简单配置 ssm + lombok，使用 MyBatis 代码生成器
+ *
+ * @param dbName     数据库名称
+ * @param dbPassword 数据库密码
+ * @param config     MyBatis 代码生成器配置对象
+ * @return Project对象
+ */
+public static Project simple(String dbName, String dbPassword, MyBatisGenerateConfig config);
 ```
+
+
+
+装配所有模板（除 `redisson`、`mybatisplus`）
+
+```java
+/**
+ * 全部装配
+ *
+ * @param dbName     数据库名称
+ * @param dbPassword 数据库密码
+ * @return Project对象
+ */
+public static Project all(String dbName, String dbPassword);
+
+/**
+ * 全部装配，使用 MyBatis 代码生成器
+ *
+ * @param dbName     数据库名称
+ * @param dbPassword 数据库密码
+ * @param config     MyBatis 代码生成器配置对象
+ * @return Project对象
+ */
+public static Project all(String dbName, String dbPassword, MyBatisGenerateConfig config);
+```
+
+
 
 按需装配模版
 按照约定大于配置的原则，所有配置均有默认值，可以自行选配
@@ -63,21 +125,39 @@ Project allProject = Projects.all("db_test", "123456");
 Project customerProject = Projects.customer();
 // basePackage，默认为 groupId
 customerProject.setBasePackage("com.xxx.xxx");
+// 更改版本控制，由 jdk8-SpringBoot2.3.6.RELEASE 修改为 jdk17-SpringBoot2.6.13
+customerProject.setVersionControls(new Jdk17VersionControl());
 
-// starter生成工厂，单例模式实现
-StarterFactory factory = new StarterFactorySingleImpl();
+// Starter 工厂，单例实现
+StarterFactory factory = StarterFactorySingleImpl.getStarterFactory();
 
-// Spring Boot Parent依赖，版本为'2.3.6.RELEASE'，已锁死
+// 构建一个 MyBatisFlexStarter，用于生成 MyBatisFlex 相关代码
+MyBatisFlexStarter myBatisFlexStarter = factory.getInstance(MyBatisFlexStarter.class);
+// 用于 MyBatisFlex 代码生成器的配置信息
+MyBatisGenerateConfig myBatisGenerateConfig = new MyBatisGenerateConfig();
+// 生成实体类时，忽略表的前缀
+myBatisGenerateConfig.setTablePrefix("tb_");
+// 需要生成的表
+myBatisGenerateConfig.setGenerateTable("tb_user", "tb_account");
+myBatisFlexStarter
+        // MyBatisFlex 依赖版本
+        .version("1.5.5")
+        // 开启 MyBatisFlex 代码生成
+        .enableMyBatisFlexGenerate(myBatisGenerateConfig);
+customerProject.addStarter(myBatisFlexStarter);
+
+// Spring Boot Parent依赖
 SpringBootParentStarter parentStarter = factory.getInstance(SpringBootParentStarter.class);
 parentStarter
-        // 启动类名称，默认为 artifactId + 'Application' 
+        // 启动类名称，默认为 artifactId + 'Application'
         .mainBootName("MainApplication")
         // yaml 中的 spring.application.name 配置项，,默认为 artifactId
         .yamlAppName("test-app")
         // 是否导入spring-boot-test-starter，默认导入
         .test(true)
-        // 是否导入spring-boot-devtools-starter，默认导入
-        .devtools(true);
+        // 是否导入spring-boot-devtools-starter，默认不导入（MyBatisFlex 与 devtools 整合会有一些小 bug）
+        .devtools(false);
+customerProject.addStarter(parentStarter);
 
 // web 场景依赖 + validation 场景依赖
 SpringBootWebStarter webStarter = factory.getInstance(SpringBootWebStarter.class);
@@ -90,30 +170,36 @@ webStarter
         .serverPort(8080)
         // 是否配置跨域，默认开启
         .cors(true);
+customerProject.addStarter(webStarter);
 
-// mybatisPlus 场景依赖 + mysql依赖
+
+// mybatisPlus 场景依赖
 MyBatisPlusStarter myBatisPlusStarter = factory.getInstance(MyBatisPlusStarter.class);
 myBatisPlusStarter
+        // 是否开启逻辑删除（isDeleted属性，0未删除，1删除），默认开启
+        .logicDelete(true)
+        // mysql版本
+        .version("8.0.32");
+// MyBatisPlusStarter 与 MyBatisFlexStarter 只能存在一个
+//customerProject.addStarter(myBatisPlusStarter);
+
+// MySql 场景依赖
+MySqlStarter mySqlStarter = factory.getInstance(MySqlStarter.class)
         // 数据库用户名，默认root
         .username("root")
         // 数据库密码，默认'123456'
-        .password("123456")
+        .password("dk18111448638")
         // 数据库名称，默认为 artifactId
-        .dbName("db_test")
+        .dbName("db_flex")
         // 数据库端口号，默认为 3306
-        .port(3306)
-        // 是否开启逻辑删除（isDeleted属性，0未删除，1删除），默认开启
-        .logicDelete(true)
-        // mysql版本，默认为 '8.0.30'
-        .mysqlVersion("8.0.30");
+        .port(3306);
+customerProject.addStarter(mySqlStarter);
 
 // Lombok 依赖
 LombokStarter lombokStarter = factory.getInstance(LombokStarter.class);
-lombokStarter
-        // lombok版本，默认'1.18.26'
-        .version("1.18.26");
+customerProject.addStarter(lombokStarter);
 
-// redisTemplate
+// redisTemplate，暂时支持单机
 RedisStarter redisStarter = factory.getInstance(RedisStarter.class)
         // redis 服务器ip，默认本地地址
         .host("localhost")
@@ -123,39 +209,37 @@ RedisStarter redisStarter = factory.getInstance(RedisStarter.class)
         .password("123456")
         // 哪个数据库，取值0～15，默认0
         .database(1);
+customerProject.addStarter(redisStarter);
 
 // redisson 场景依赖，暂支持单机配置
 RedissonStarter redissonStarter = factory.getInstance(RedissonStarter.class);
 redissonStarter
         // 哪个数据库，取值0～15，默认0
         .database(0)
-        // redisson依赖版本，默认 3.13.6
+        // redisson依赖版本
         .version("3.13.6")
         // redis端口号，默认 6379
         .port(6379)
         // redis 服务器ip，默认本地地址
-        .host("127.0.0.1");
+        .host("127.0.0.1")
+        // redis 密码
+        .password("123456");
+customerProject.addStarter(redissonStarter);
 
 
-// Knife4j 场景依赖
-Knife4jStarter knife4jStarter = factory.getInstance(Knife4jStarter.class);
-knife4jStarter
-        // 标题，默认为 artifactId
-        .title("test-title")
-        // 描述，默认为其仓库示例代码描述
-        .description("test-description")
-        // 版本，默认为'2.0.7'
-        .version("2.0.7");
+// SpringDocStarter 场景依赖
+SpringDocStarter springDocStarter = factory.getInstance(SpringDocStarter.class);
+springDocStarter
+        // SpringDoc 版本
+        .version("1.7.0")
+        // open API 访问路径，默认 /api-docs
+        .openAPIPath("/api-docs")
+        // ui 接口访问路径，默认 /swagger-ui.html
+        .swaggerUIPath("/swagger-ui.html");
+customerProject.addStarter(springDocStarter);
 
-// 将starter项添加到project中
-customerProject
-        .addStarter(parentStarter)
-        .addStarter(webStarter)
-        .addStarter(myBatisPlusStarter)
-        .addStarter(lombokStarter)
-			  .addStarter(redisStarter)
-        .addStarter(redissonStarter)
-        .addStarter(knife4jStarter);
+// 开始执行生成代码
+customerProject.generate();
 ```
 
 
@@ -241,7 +325,7 @@ public class CustomerStarter extends StarterAdapter {
 
 # 处理器
 
-处理器用于执行生成模板的逻辑，处理器统一实现了`cloud.makeronbean.generate.handler.GenerateHandler`，默认提供`代码生成处理器`、`yaml生成处理器`、`pom生成处理器`，可以自行删减
+处理器用于执行生成模板的逻辑，处理器统一实现了`handler.tech.beanmak1r.generate.GenerateHandler`，默认提供`代码生成处理器`、`yaml生成处理器`、`pom生成处理器`，可以自行删减
 
 下面示例删除了`pom生成处理器`，生成模板时不会添加pom依赖
 
