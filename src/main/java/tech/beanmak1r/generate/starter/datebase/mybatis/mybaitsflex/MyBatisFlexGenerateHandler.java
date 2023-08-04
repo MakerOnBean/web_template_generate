@@ -61,7 +61,7 @@ public class MyBatisFlexGenerateHandler implements SupportHandler {
     }
 
     @Override
-    public void generateHandler(AbstractStarter starter) throws Exception {
+    public void generateHandler(AbstractStarter starter) {
         if (starter instanceof MyBatisFlexStarter) {
             if (generateConfig.getGenerateTable().isEmpty()) {
                 return;
@@ -72,8 +72,7 @@ public class MyBatisFlexGenerateHandler implements SupportHandler {
     }
 
     @Override
-    public void afterGenerate() throws Exception {
-    }
+    public void afterGenerate() {}
 
     @Override
     public boolean isSupport() {

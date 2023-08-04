@@ -26,13 +26,9 @@ public class XmlUtils {
     private static final File POM_FILE;
     private static final InputStream IN;
     private static final String URL = "http://maven.apache.org/POM/4.0.0";
-    private static final Map<String, String> namespaceURIs;
     private static final Element projectElement;
 
     static {
-        namespaceURIs = new HashMap<>();
-        namespaceURIs.put("a", "http://maven.apache.org/POM/4.0.0");
-        namespaceURIs.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
         String path = Project.project().pomPath();
         POM_FILE = new File(path);
         try {

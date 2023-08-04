@@ -39,7 +39,7 @@ public class YamlHandler extends GenerateHandlerAdapter {
      * 序列化 map 到 yaml 中
      *
      * @param map 被序列化的map
-     * @throws IOException
+     * @throws IOException 文件创建失败时抛出
      */
     public void dump(Map<String, Object> map) throws IOException {
 
@@ -81,7 +81,7 @@ public class YamlHandler extends GenerateHandlerAdapter {
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
             if (i != keys.length - 1) {
-                Map<String, Object> curMap = null;
+                Map<String, Object> curMap;
                 if (!tempMap.containsKey(key)) {
                     curMap = new HashMap<>();
                     tempMap.put(key, curMap);

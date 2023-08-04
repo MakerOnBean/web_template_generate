@@ -13,7 +13,7 @@ public class StringUtils {
     private static final String packageStr = "package %s%s;\n\n";
     
     public static String addPackage(String codePath, String codeTemplate) {
-        String resultStr = null;
+        String resultStr;
         if (isEmpty(codePath)) {
             resultStr = String.format(packageStr, Project.project().basePackage(), "");
         } else {

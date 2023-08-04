@@ -153,7 +153,7 @@ public class Project {
      * 通过类型获取starter
      *
      * @param clazz starter子类型
-     * @param <T>
+     * @param <T> extends AbstractStarter
      * @return 类型对应的starter对象，如果不存在返回null
      */
     public <T extends AbstractStarter> T getStarterByType(Class<T> clazz) {
@@ -170,7 +170,7 @@ public class Project {
      * 根据类型删除starter
      *
      * @param clazz starter子类型
-     * @param <T>
+     * @param <T> extends AbstractStarter
      * @return this
      */
     public <T extends AbstractStarter> Project deleteStarterByType(Class<T> clazz) {
@@ -209,7 +209,7 @@ public class Project {
 
 
     public void generate() {
-        List<AbstractStarter> executeStarterList = null;
+        List<AbstractStarter> executeStarterList;
         List<GenerateHandler> executeHandlerList = null;
         try {
             // 排序 去重

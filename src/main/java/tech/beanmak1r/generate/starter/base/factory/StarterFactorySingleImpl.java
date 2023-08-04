@@ -31,7 +31,7 @@ public class StarterFactorySingleImpl implements StarterFactory {
     
     public <T extends AbstractStarter> T getInstance(Class<T> clazz) {
         try {
-            T result = null;
+            T result;
             Optional<AbstractStarter> starterOptional = starterSet.stream().filter(item -> item.getClass().equals(clazz)).findFirst();
             if (!starterOptional.isPresent()) {
                 Constructor<T> constructor = clazz.getDeclaredConstructor();

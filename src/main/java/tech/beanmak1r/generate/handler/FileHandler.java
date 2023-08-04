@@ -23,7 +23,7 @@ public class FileHandler extends GenerateHandlerAdapter {
      * 创建文件并写入
      *
      * @param codeItem 代码项
-     * @throws IOException
+     * @throws IOException 文件创建失败时抛出
      */
     private void write(CodeItem codeItem) throws IOException {
         String path = codeItem.getPath();

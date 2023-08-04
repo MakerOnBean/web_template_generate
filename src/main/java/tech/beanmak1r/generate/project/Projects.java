@@ -17,7 +17,7 @@ import tech.beanmak1r.generate.starter.web.SpringBootWebStarter;
  * @description
  */
 public class Projects {
-    private static Project PROJECT = Project.project();
+    private static final Project PROJECT = Project.project();
     private static final StarterFactory FACTORY = StarterFactorySingleImpl.getStarterFactory();
 
 
