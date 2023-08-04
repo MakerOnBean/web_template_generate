@@ -1,8 +1,9 @@
 package cloud.makeronbean.generate.starter.web;
 
+import cloud.makeronbean.generate.project.Project;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.ProjectInfo;
 
 /**
  * @author makeronbean
@@ -173,7 +174,7 @@ public class SpringBootWebCode {
                         "        // 返回 ERROR R\n" +
                         "        return R.error(ResultCode.SYS_ERROR);\n" +
                         "    }\n" +
-                        "}", ProjectInfoUtils.basePackage, ProjectInfoUtils.basePackage
+                        "}", Project.project().basePackage(), Project.project().basePackage()
         ));
         code.addCodeItem(globalHandler);
     }
@@ -236,7 +237,7 @@ public class SpringBootWebCode {
                         "    public static void isFalse(boolean flag, ResultCode resultCode) {\n" +
                         "        isTrue(!flag, resultCode);\n" +
                         "    }\n" +
-                        "}", ProjectInfoUtils.basePackage, ProjectInfoUtils.basePackage
+                        "}", Project.project().basePackage(), Project.project().basePackage()
         ));
         code.addCodeItem(assertUtils);
 
@@ -255,7 +256,7 @@ public class SpringBootWebCode {
                         "    public ResultCode getCode() {\n" +
                         "        return code;\n" +
                         "    }\n" +
-                        "}", ProjectInfoUtils.basePackage
+                        "}", Project.project().basePackage()
         ));
         code.addCodeItem(assertException);
     }

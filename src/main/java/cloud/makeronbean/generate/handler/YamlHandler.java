@@ -1,8 +1,9 @@
 package cloud.makeronbean.generate.handler;
 
+import cloud.makeronbean.generate.project.Project;
 import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.ProjectInfo;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -25,7 +26,7 @@ public class YamlHandler extends GenerateHandlerAdapter{
     private final Yaml yaml;
     
     public YamlHandler() {
-        path = ProjectInfoUtils.yamlFilePath();
+        path = Project.project().configPath();
         DumperOptions options = new DumperOptions();
         // 通常使用的yaml格式
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);

@@ -8,7 +8,6 @@ import cloud.makeronbean.generate.starter.mybatisplus.MyBatisPlusStarter;
 import cloud.makeronbean.generate.starter.mysql.MySqlStarter;
 import cloud.makeronbean.generate.starter.parent.SpringBootParentStarter;
 import cloud.makeronbean.generate.starter.redis.RedisStarter;
-import cloud.makeronbean.generate.starter.redisson.RedissonStarter;
 import cloud.makeronbean.generate.starter.web.SpringBootWebStarter;
 
 /**
@@ -19,8 +18,8 @@ import cloud.makeronbean.generate.starter.web.SpringBootWebStarter;
 public class Projects {
     private static Project PROJECT;
     private static final StarterFactory FACTORY = new StarterFactorySingleImpl();
-    
-    
+
+
     /**
      * 全部装配
      *
@@ -29,20 +28,18 @@ public class Projects {
      * @return Project对象
      */
     public static Project all(String dbName, String dbPassword) {
-        checkExist();
-    
-        PROJECT = new Project();
-        
+        PROJECT = Project.project();
+
         SpringBootParentStarter parentStarter = FACTORY.getInstance(SpringBootParentStarter.class);
         SpringBootWebStarter webStarter = FACTORY.getInstance(SpringBootWebStarter.class);
-        
+
         MyBatisPlusStarter myBatisPlusStarter = FACTORY.getInstance(MyBatisPlusStarter.class);
 
         MySqlStarter mySqlStarter = FACTORY.getInstance(MySqlStarter.class);
         mySqlStarter.dbName(dbName).password(dbPassword);
-        
+
         LombokStarter lombokStarter = FACTORY.getInstance(LombokStarter.class);
-        
+
         Knife4jStarter knife4jStarter = FACTORY.getInstance(Knife4jStarter.class);
 
         RedisStarter redisStarter = FACTORY.getInstance(RedisStarter.class);
@@ -56,8 +53,8 @@ public class Projects {
                 .addStarter(knife4jStarter)
                 .addStarter(redisStarter);
     }
-    
-    
+
+
     /**
      * 简单配置 ssm + lombok
      *
@@ -66,10 +63,8 @@ public class Projects {
      * @return Project对象
      */
     public static Project simple(String dbName, String dbPassword) {
-        checkExist();
-    
-        PROJECT = new Project();
-        
+        PROJECT = Project.project();
+
         SpringBootParentStarter parentStarter = FACTORY.getInstance(SpringBootParentStarter.class);
 
         SpringBootWebStarter webStarter = FACTORY.getInstance(SpringBootWebStarter.class);
@@ -82,7 +77,7 @@ public class Projects {
         mySqlStarter.dbName(dbName).password(dbPassword);
 
         LombokStarter lombokStarter = FACTORY.getInstance(LombokStarter.class);
-        
+
         return PROJECT
                 .addStarter(parentStarter)
                 .addStarter(webStarter)
@@ -90,25 +85,14 @@ public class Projects {
                 .addStarter(myBatisPlusStarter)
                 .addStarter(lombokStarter);
     }
-    
-    
+
+
     /**
      * 自定义
      *
      * @return Project对象
      */
     public static Project customer() {
-        checkExist();
-        return new Project();
-    }
-    
-    
-    /**
-     * 检查Project是否已经存在
-     */
-    private static void checkExist() {
-        if (PROJECT != null) {
-            throw new RuntimeException("Project已存在");
-        }
+        return Project.project();
     }
 }

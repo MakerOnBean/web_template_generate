@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.starter.base.dependency;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
 
 import java.util.*;
 
@@ -31,8 +31,8 @@ public class DependencyItem {
         return this;
     }
 
-    public DependencyItem setPath(DependencyConst dependencyConst) {
-        this.path = dependencyConst.getTabName();
+    public DependencyItem setPath(TagsEnum tagsEnum) {
+        this.path = tagsEnum.getTabName();
         return this;
     }
 
@@ -41,8 +41,8 @@ public class DependencyItem {
         return this;
     }
 
-    public DependencyItem addTag(DependencyConst dependencyConst, String value) {
-        tags.put(dependencyConst.getTabName(), value);
+    public DependencyItem addTag(TagsEnum tagsEnum, String value) {
+        tags.put(tagsEnum.getTabName(), value);
         return this;
     }
 

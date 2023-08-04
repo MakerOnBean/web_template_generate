@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.starter.lombok;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
@@ -26,11 +26,10 @@ public class LombokStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem lombok = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "org.projectlombok")
-                .addTag(DependencyConst.ARTIFACT_ID, "lombok")
-                .addTag(DependencyConst.VERSION, config.getVersion())
-                .addTag(DependencyConst.SCOPE, "provided");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "org.projectlombok")
+                .addTag(TagsEnum.ARTIFACT_ID, "lombok")
+                .addTag(TagsEnum.SCOPE, "provided");
         dependency.addDependencyItem(lombok);
     }
 }

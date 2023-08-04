@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.starter.web;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
@@ -44,17 +44,17 @@ public class SpringBootWebStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem web = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-web");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-starter-web");
         dependency.addDependencyItem(web);
 
         // 参数校验
         if (config.isValid()) {
             DependencyItem validation = new DependencyItem()
-                    .setPath(DependencyConst.DEPENDENCY)
-                    .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                    .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-validation");
+                    .setPath(TagsEnum.DEPENDENCY)
+                    .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                    .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-starter-validation");
             dependency.addDependencyItem(validation);
         }
     }

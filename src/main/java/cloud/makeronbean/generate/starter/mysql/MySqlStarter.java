@@ -1,10 +1,13 @@
 package cloud.makeronbean.generate.starter.mysql;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * mysql Starter
@@ -20,8 +23,8 @@ public class MySqlStarter extends StarterAdapter {
         this.order = 3;
     }
 
-    public MySqlStarter mysqlVersion(String version) {
-        config.setMysqlVersion(version);
+    public MySqlStarter version(String version) {
+        config.version(version);
         return this;
     }
 
@@ -50,11 +53,14 @@ public class MySqlStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem mysql = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "mysql")
-                .addTag(DependencyConst.ARTIFACT_ID, "mysql-connector-java")
-                .addTag(DependencyConst.VERSION, config.getMysqlVersion())
-                .addTag(DependencyConst.SCOPE, "runtime");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "mysql")
+                .addTag(TagsEnum.ARTIFACT_ID, "mysql-connector-java")
+                .addTag(TagsEnum.SCOPE, "runtime")
+                .addTag(TagsEnum.VERSION, StringUtils.isEmpty(
+                        config.getVersion()) ?
+                        Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.MYSQL) :
+                        config.getVersion());
         dependency.addDependencyItem(mysql);
     }
 

@@ -1,5 +1,8 @@
 package cloud.makeronbean.generate.starter.redisson;
 
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
+
 /**
  * @author makeronbean
  * @createDate 2023-05-04  09:18
@@ -12,7 +15,7 @@ public class RedissonConfig {
 
     private Integer database = 0;
 
-    private String version = "3.13.6";
+    private String version;
 
     private String password;
 

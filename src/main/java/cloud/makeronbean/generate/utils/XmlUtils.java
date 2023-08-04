@@ -1,6 +1,8 @@
 package cloud.makeronbean.generate.utils;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.ProjectInfo;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
@@ -32,12 +34,13 @@ public class XmlUtils {
         namespaceURIs = new HashMap<>();
         namespaceURIs.put("a", "http://maven.apache.org/POM/4.0.0");
         namespaceURIs.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        String path = ProjectInfoUtils.pomFilePath();
+        String path = Project.project().pomPath();
         POM_FILE = new File(path);
         try {
             IN = new FileInputStream(POM_FILE);
             DOCUMENT = new SAXReader().read(IN);
-            projectElement = (Element) DOCUMENT.selectSingleNode(DependencyConst.PROJECT.getTabName());
+            projectElement = (Element) DOCUMENT.selectSingleNode(TagsEnum.PROJECT.getTabName());
+            removeEmptyTextNodes(DOCUMENT.getRootElement());
         } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException("pom 文件操作失败", e);
         }
@@ -120,7 +123,7 @@ public class XmlUtils {
      * 将内存中的 xml 写入磁盘，并关闭流
      */
     public static void refreshAndClose() throws IOException {
-        removeEmptyTextNodes(DOCUMENT.getRootElement());
+        //removeEmptyTextNodes(DOCUMENT.getRootElement());
 
         OutputFormat format = OutputFormat.createPrettyPrint();
         format.setEncoding("UTF-8");

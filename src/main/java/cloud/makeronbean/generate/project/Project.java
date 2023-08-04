@@ -7,7 +7,6 @@ import cloud.makeronbean.generate.handler.PomHandler;
 import cloud.makeronbean.generate.handler.YamlHandler;
 import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapter;
 import cloud.makeronbean.generate.starter.base.starter.StarterBridgeAdapterImpl;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -22,23 +21,75 @@ import java.util.stream.Collectors;
 
 public class Project {
 
-    /**
-     * starter项列表
-     */
-    private final List<AbstractStarter> starterList;
 
-    /**
-     * 处理器列表
-     */
-    private final List<GenerateHandler> generateHandlerList;
+    private static Project instance;
 
-    private final StarterBridgeAdapter starterBridgeAdapter = new StarterBridgeAdapterImpl();
+    public static Project project() {
+        if (instance == null) {
+            instance = new Project();
+            instance.init();
+        }
+        return instance;
+    }
 
-    Project() {
+    private void init() {
         generateHandlerList = getHandlerList();
         this.starterList = new LinkedList<>();
     }
 
+    Project() {}
+
+    /**
+     * starter项列表
+     */
+    private List<AbstractStarter> starterList;
+
+    /**
+     * 处理器列表
+     */
+    private List<GenerateHandler> generateHandlerList;
+
+    private final StarterBridgeAdapter starterBridgeAdapter = new StarterBridgeAdapterImpl();
+
+    public String projectPath() {
+        return ProjectInfo.projectPath;
+    }
+
+    public String basePackage() {
+        return ProjectInfo.basePackage;
+    }
+
+    public String groupId() {
+        return ProjectInfo.groupId;
+    }
+
+    public String artifactId() {
+        return ProjectInfo.artifactId;
+    }
+
+    public String javaPath() {
+        return ProjectInfo.javaPath();
+    }
+
+    public String packagePath() {
+        return ProjectInfo.packagePath();
+    }
+
+    public String configPath() {
+        return ProjectInfo.configPath();
+    }
+
+    public String pomPath() {
+        return ProjectInfo.pomPath();
+    }
+
+    public AbstractVersionControls versionControls() {
+        return ProjectInfo.getVersionControls();
+    }
+
+    public void setVersionControls(AbstractVersionControls versionControls) {
+        ProjectInfo.setVersionControls(versionControls);
+    }
 
     /**
      * 初始化处理器列表
@@ -78,7 +129,7 @@ public class Project {
      * @param <T>
      * @return 类型对应的starter对象，如果不存在返回null
      */
-    public <T> T getStarterByType(Class<T> clazz) {
+    public <T extends AbstractStarter> T getStarterByType(Class<T> clazz) {
         for (AbstractStarter starter : starterList) {
             if (starter.getClass().equals(clazz)) {
                 return (T) starter;
@@ -95,7 +146,7 @@ public class Project {
      * @param <T>
      * @return this
      */
-    public <T> Project deleteStarterByType(Class<T> clazz) {
+    public <T extends AbstractStarter> Project deleteStarterByType(Class<T> clazz) {
         starterList.removeIf(starter -> starter.getClass().equals(clazz));
         return this;
     }
@@ -108,7 +159,7 @@ public class Project {
      * @return this
      */
     public Project setBasePackage(String basePackage) {
-        ProjectInfoUtils.basePackage = basePackage;
+        ProjectInfo.basePackage = basePackage;
         return this;
     }
 
@@ -136,7 +187,7 @@ public class Project {
      * @param <T>   子类处理器
      * @return this
      */
-    public <T> Project deleteGenerateHandlerByType(Class<T> clazz) {
+    public <T extends AbstractStarter> Project deleteGenerateHandlerByType(Class<T> clazz) {
         this.generateHandlerList.removeIf(handler -> handler.getClass().equals(clazz));
         return this;
     }

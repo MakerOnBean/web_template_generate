@@ -1,10 +1,13 @@
 package cloud.makeronbean.generate.starter.redisson;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * @author makeronbean
@@ -51,10 +54,13 @@ public class RedissonStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem redisson = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "org.redisson")
-                .addTag(DependencyConst.ARTIFACT_ID, "redisson-spring-boot-starter")
-                .addTag(DependencyConst.VERSION, config.getVersion());
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "org.redisson")
+                .addTag(TagsEnum.ARTIFACT_ID, "redisson-spring-boot-starter")
+                .addTag(TagsEnum.VERSION, StringUtils.isEmpty(
+                        config.getVersion()) ?
+                        Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.REDISSON) :
+                        config.getVersion());
         dependency.addDependencyItem(redisson);
     }
 

@@ -1,66 +1,81 @@
-package cloud.makeronbean.generate.utils;
+package cloud.makeronbean.generate.project;
+
+import cloud.makeronbean.generate.utils.XmlUtils;
 
 /**
  * @author makeronbean
  * @createDate 2023-05-02  22:42
  * @description
  */
-public class ProjectInfoUtils {
+public class ProjectInfo {
     /**
      * 项目磁盘路径
      */
-    public static String projectPath;
-    
-    
+    static String projectPath;
+
     /**
      * 基础包名
      */
-    public static String basePackage;
-    
+    static String basePackage;
+
     /**
-     *
      * groupId
      */
-    public static String groupId;
-    
+    static String groupId;
+
     /**
      * artifactId
      */
-    public static String artifactId;
-    
+    static String artifactId;
+
     /**
      * 获取java文件基路径
      */
-    public static String getJavaPath() {
+    static String javaPath() {
         return projectPath + "/" + "src" + "/" + "main" + "/" + "java" + "/" + packagePath();
     }
-    
+
     /**
      * 项目生成的包路径
      */
-    public static String packagePath() {
-        return basePackage.replaceAll("\\.","/");
+    static String packagePath() {
+        return basePackage.replaceAll("\\.", "/");
     }
-    
+
     /**
      * yaml配置文件路径
      */
-    public static String yamlFilePath() {
+    static String configPath() {
         return projectPath + "/" + "src" + "/" + "main" + "/" + "resources" + "/" + "application.yaml";
     }
-    
+
     /**
      * pom文件路径
      */
-    public static String pomFilePath() {
+    static String pomPath() {
         return projectPath + "/" + "pom.xml";
     }
-    
+
+
+    /**
+     * 版本控制
+     */
+    private static AbstractVersionControls versionControls;
+
     static {
         projectPath = System.getProperty("user.dir");
         groupId = XmlUtils.getSingleValue("groupId");
         artifactId = XmlUtils.getSingleValue("artifactId");
         basePackage = groupId;
+        versionControls = new Jdk8VersionControl();
     }
 
+
+    static AbstractVersionControls getVersionControls() {
+        return versionControls;
+    }
+
+    static void setVersionControls(AbstractVersionControls versionControls) {
+        ProjectInfo.versionControls = versionControls;
+    }
 }

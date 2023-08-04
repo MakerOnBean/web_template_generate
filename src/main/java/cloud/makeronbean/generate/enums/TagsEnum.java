@@ -1,11 +1,11 @@
-package cloud.makeronbean.generate.constant;
+package cloud.makeronbean.generate.enums;
 
 /**
  * @author makeronbean
  * @createDate 2023-05-01  11:01
- * @description 依赖常量类
+ * @description 依赖标签常量类
  */
-public enum DependencyConst {
+public enum TagsEnum {
 
     PROJECT("project"),
 
@@ -29,7 +29,7 @@ public enum DependencyConst {
 
     private final String tabName;
 
-    DependencyConst(String tabName) {
+    TagsEnum(String tabName) {
         this.tabName = tabName;
     }
     

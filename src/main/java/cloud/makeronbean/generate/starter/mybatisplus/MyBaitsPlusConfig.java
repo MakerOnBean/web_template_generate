@@ -1,6 +1,7 @@
 package cloud.makeronbean.generate.starter.mybatisplus;
 
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 
 /**
  * @author makeronbean
@@ -8,7 +9,7 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  * @description
  */
 public class MyBaitsPlusConfig {
-    private String mybatisPlusVersion = "3.4.1";
+    private String version;
 
     private boolean logicDelete = true;
 
@@ -20,11 +21,11 @@ public class MyBaitsPlusConfig {
         this.logicDelete = logicDelete;
     }
 
-    String getMybatisPlusVersion() {
-        return mybatisPlusVersion;
+    String getVersion() {
+        return version;
     }
 
-    void setMybatisPlusVersion(String mybatisPlusVersion) {
-        this.mybatisPlusVersion = mybatisPlusVersion;
+    void setVersion(String version) {
+        this.version = version;
     }
 }

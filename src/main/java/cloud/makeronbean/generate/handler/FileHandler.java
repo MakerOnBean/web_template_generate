@@ -1,10 +1,11 @@
 package cloud.makeronbean.generate.handler;
 
+import cloud.makeronbean.generate.project.Project;
 import cloud.makeronbean.generate.starter.base.starter.AbstractStarter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.utils.FileUtils;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.ProjectInfo;
 import cloud.makeronbean.generate.utils.StringUtils;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class FileHandler extends GenerateHandlerAdapter {
      */
     private void write(CodeItem codeItem) throws IOException {
         String path = codeItem.getPath();
-        String filePath = ProjectInfoUtils.getJavaPath();
+        String filePath = Project.project().javaPath();
         
         if (path != null && !path.isEmpty()) {
             filePath += "/" + path;

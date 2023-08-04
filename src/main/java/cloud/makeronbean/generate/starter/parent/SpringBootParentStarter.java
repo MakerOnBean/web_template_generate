@@ -1,12 +1,15 @@
 package cloud.makeronbean.generate.starter.parent;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * @author makeronbean
@@ -49,27 +52,33 @@ public class SpringBootParentStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem parent = new DependencyItem()
-                .setPath(DependencyConst.PARENT)
-                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-parent")
-                .addTag(DependencyConst.VERSION, config.getVersion());
+                .setPath(TagsEnum.PARENT)
+                .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-starter-parent")
+                .addTag(TagsEnum.VERSION, StringUtils.isEmpty(
+                        config.getVersion()) ?
+                        Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.SPRING_BOOT) :
+                        config.getVersion());
         dependency.addDependencyItem(parent);
 
         DependencyItem plugin = new DependencyItem()
-                .setPath(DependencyConst.PLUGIN)
-                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-maven-plugin")
-                .addTag(DependencyConst.VERSION, config.getVersion());
+                .setPath(TagsEnum.PLUGIN)
+                .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-maven-plugin")
+                .addTag(TagsEnum.VERSION, StringUtils.isEmpty(
+                        config.getVersion()) ?
+                        Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.SPRING_BOOT) :
+                        config.getVersion());
         dependency.addDependencyItem(plugin);
 
         // devtools
         if (config.isDevtools()) {
             DependencyItem devtools = new DependencyItem()
-                    .setPath(DependencyConst.DEPENDENCY)
-                    .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                    .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-devtools")
-                    .addTag(DependencyConst.SCOPE, "runtime")
-                    .addTag(DependencyConst.OPTIONAL, "true");
+                    .setPath(TagsEnum.DEPENDENCY)
+                    .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                    .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-devtools")
+                    .addTag(TagsEnum.SCOPE, "runtime")
+                    .addTag(TagsEnum.OPTIONAL, "true");
 
             dependency.addDependencyItem(devtools);
         }
@@ -77,10 +86,10 @@ public class SpringBootParentStarter extends StarterAdapter {
         //test
         if (config.isTest()) {
             DependencyItem test = new DependencyItem()
-                    .setPath(DependencyConst.DEPENDENCY)
-                    .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                    .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-test")
-                    .addTag(DependencyConst.SCOPE, "test");
+                    .setPath(TagsEnum.DEPENDENCY)
+                    .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                    .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-starter-test")
+                    .addTag(TagsEnum.SCOPE, "test");
             dependency.addDependencyItem(test);
         }
     }

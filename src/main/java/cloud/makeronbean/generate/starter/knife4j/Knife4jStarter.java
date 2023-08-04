@@ -1,12 +1,15 @@
 package cloud.makeronbean.generate.starter.knife4j;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.ProjectInfo;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * @author makeronbean
@@ -37,15 +40,17 @@ public class Knife4jStarter extends StarterAdapter {
     }
 
 
-
-
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem knife4j = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "com.github.xiaoymin")
-                .addTag(DependencyConst.VERSION, config.getVersion())
-                .addTag(DependencyConst.ARTIFACT_ID, "knife4j-spring-boot-starter");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "com.github.xiaoymin")
+                .addTag(TagsEnum.ARTIFACT_ID, "knife4j-spring-boot-starter")
+                .addTag(TagsEnum.VERSION,
+                        StringUtils.isEmpty(
+                                config.getVersion()) ?
+                                Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.KNIFE4J) :
+                                config.getVersion());
         dependency.addDependencyItem(knife4j);
     }
 
@@ -83,7 +88,7 @@ public class Knife4jStarter extends StarterAdapter {
                         "                .paths(PathSelectors.any())\n" +
                         "                .build();\n" +
                         "    }\n" +
-                        "}", config.getTitle(), config.getDescription(), ProjectInfoUtils.basePackage
+                        "}", config.getTitle(), config.getDescription(), Project.project().basePackage()
         ));
         code.addCodeItem(knifeConfig);
     }

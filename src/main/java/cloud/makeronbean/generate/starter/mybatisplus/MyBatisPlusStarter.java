@@ -1,13 +1,16 @@
 package cloud.makeronbean.generate.starter.mybatisplus;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.starter.base.dependency.DependencyItem;
 import cloud.makeronbean.generate.starter.base.starter.StarterAdapter;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
 import cloud.makeronbean.generate.starter.base.yaml.BaseYaml;
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.ProjectInfo;
+import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
  * @author makeronbean
@@ -22,26 +25,26 @@ public class MyBatisPlusStarter extends StarterAdapter {
         this.order = 3;
     }
 
-
-
     public MyBatisPlusStarter logicDelete(boolean open) {
         config.setLogicDelete(open);
         return this;
     }
 
-    public MyBatisPlusStarter myBatisPlusVersion(String version) {
-        config.setMybatisPlusVersion(version);
+    public MyBatisPlusStarter version(String version) {
+        config.setVersion(version);
         return this;
     }
-
 
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem mybatisPlus = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "com.baomidou")
-                .addTag(DependencyConst.ARTIFACT_ID, "mybatis-plus-boot-starter")
-                .addTag(DependencyConst.VERSION, "3.4.1");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "com.baomidou")
+                .addTag(TagsEnum.ARTIFACT_ID, "mybatis-plus-boot-starter")
+                .addTag(TagsEnum.VERSION, StringUtils.isEmpty(
+                        config.getVersion()) ?
+                        Project.project().versionControls().getVersion(VersionHolder.DependencyNameEnum.MY_BATIS_PLUS) :
+                        config.getVersion());
         dependency.addDependencyItem(mybatisPlus);
     }
 
@@ -49,7 +52,7 @@ public class MyBatisPlusStarter extends StarterAdapter {
     protected void addYaml(BaseYaml yaml) {
         yaml.addYamlConfig("mybatis-plus.configuration.log-impl", "org.apache.ibatis.logging.stdout.StdOutImpl");
         yaml.addYamlConfig("mybatis-plus.configuration.map-underscore-to-camel-case", true);
-        yaml.addYamlConfig("mybatis-plus.type-aliases-package", ProjectInfoUtils.basePackage + ".entity");
+        yaml.addYamlConfig("mybatis-plus.type-aliases-package", Project.project().basePackage() + ".entity");
         // 是否开启逻辑删除
         if (config.isLogicDelete()) {
             yaml.addYamlConfig("mybatis-plus.global-config.db-config.logic-delete-field", "isDeleted");
@@ -94,7 +97,7 @@ public class MyBatisPlusStarter extends StarterAdapter {
                         "    public void updateFill(MetaObject metaObject) {\n" +
                         "        this.strictUpdateFill(metaObject, \"updateTime\", Date.class, new Date());\n" +
                         "    }\n" +
-                        "}", ProjectInfoUtils.basePackage
+                        "}", Project.project().basePackage()
                 )
         );
         code.addCodeItem(meta);

@@ -1,6 +1,7 @@
 package cloud.makeronbean.generate.starter.knife4j;
 
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 
 /**
  * @author makeronbean
@@ -8,9 +9,9 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  * @description
  */
 public class Knife4jConfig {
-    private String version = "2.0.7";
+    private String version;
 
-    private String title = ProjectInfoUtils.artifactId;
+    private String title = Project.project().artifactId();
 
     private String description = "swagger-bootstrap-ui-demo RESTful APIs";
 

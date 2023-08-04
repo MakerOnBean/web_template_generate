@@ -1,6 +1,8 @@
 package cloud.makeronbean.generate.starter.parent;
 
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.ProjectInfo;
+import cloud.makeronbean.generate.project.VersionHolder;
 import cloud.makeronbean.generate.utils.StringUtils;
 
 /**
@@ -9,11 +11,11 @@ import cloud.makeronbean.generate.utils.StringUtils;
  * @description
  */
 public class SpringBootParentConfig {
-    private String yamlAppName = ProjectInfoUtils.artifactId;
+    private String yamlAppName = Project.project().artifactId();
 
-    private String version = "2.3.6.RELEASE";
+    private String version;
 
-    private String mainBootName = StringUtils.bootNameFormat(ProjectInfoUtils.artifactId);
+    private String mainBootName = StringUtils.bootNameFormat(Project.project().artifactId());
 
     private boolean devtools = true;
 

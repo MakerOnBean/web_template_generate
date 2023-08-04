@@ -1,6 +1,6 @@
 package cloud.makeronbean.generate.starter.redis;
 
-import cloud.makeronbean.generate.constant.DependencyConst;
+import cloud.makeronbean.generate.enums.TagsEnum;
 import cloud.makeronbean.generate.starter.base.code.BaseCode;
 import cloud.makeronbean.generate.starter.base.code.CodeItem;
 import cloud.makeronbean.generate.starter.base.dependency.BaseDependency;
@@ -49,15 +49,15 @@ public class RedisStarter extends StarterAdapter {
     @Override
     protected void addDependency(BaseDependency dependency) {
         DependencyItem redis = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "org.springframework.boot")
-                .addTag(DependencyConst.ARTIFACT_ID, "spring-boot-starter-data-redis");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "org.springframework.boot")
+                .addTag(TagsEnum.ARTIFACT_ID, "spring-boot-starter-data-redis");
         dependency.addDependencyItem(redis);
 
         DependencyItem redisPool = new DependencyItem()
-                .setPath(DependencyConst.DEPENDENCY)
-                .addTag(DependencyConst.GROUP_ID, "org.apache.commons")
-                .addTag(DependencyConst.ARTIFACT_ID, "commons-pool2");
+                .setPath(TagsEnum.DEPENDENCY)
+                .addTag(TagsEnum.GROUP_ID, "org.apache.commons")
+                .addTag(TagsEnum.ARTIFACT_ID, "commons-pool2");
         dependency.addDependencyItem(redisPool);
     }
 

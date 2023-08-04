@@ -1,6 +1,7 @@
 package cloud.makeronbean.generate.starter.mysql;
 
-import cloud.makeronbean.generate.utils.ProjectInfoUtils;
+import cloud.makeronbean.generate.project.Project;
+import cloud.makeronbean.generate.project.VersionHolder;
 
 /**
  * mysql 配置
@@ -10,7 +11,7 @@ import cloud.makeronbean.generate.utils.ProjectInfoUtils;
  */
 public class MySqlConfig {
 
-    private String mysqlVersion = "8.0.30";
+    private String version;
 
     private String username = "root";
 
@@ -18,10 +19,10 @@ public class MySqlConfig {
 
     private Integer port = 3306;
 
-    private String dbName = ProjectInfoUtils.artifactId;
+    private String dbName = Project.project().artifactId();
 
-    String getMysqlVersion() {
-        return mysqlVersion;
+    String getVersion() {
+        return version;
     }
 
     String getUsername() {
@@ -40,8 +41,8 @@ public class MySqlConfig {
         return port;
     }
 
-    void setMysqlVersion(String mysqlVersion) {
-        this.mysqlVersion = mysqlVersion;
+    void version(String mysqlVersion) {
+        this.version = mysqlVersion;
     }
 
     void setUsername(String username) {
